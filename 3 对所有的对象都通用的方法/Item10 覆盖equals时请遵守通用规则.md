@@ -1,14 +1,6 @@
-## 3 对所有的对象都通用的方法
+# Item10 覆盖equals时请遵守通用规则
 
-> **A**LTHOUGH Object is a concrete class, it is designed primarily for extension. All of its nonfinal methods (equals, hashCode, toString, clone, and finalize) have explicit *general contracts* because they are designed to be overridden. It is the responsibility of any class overriding these methods to obey their general contracts; failure to do so will prevent other classes that depend on the contracts (such as HashMap and HashSet) from functioning properly in conjunction with the class.
->
-> This chapter tells you when and how to override the nonfinal Object methods. The finalize method is omitted from this chapter because it was discussed in Item 8. While not an Object method, Comparable.compareTo is discussed in this chapter because it has a similar character.
-
-虽然Object是一个具体的类，但是这个类就是设计来扩展的。为了更好的被覆盖（overridden），它的所有非final的方法（equals, hashCode, toString, clone, 和 finalize）都有明确的通用约定（general contract）。任何类要覆盖这些方法的时候，都有责任遵守这些通用约定。否则这些类将无法和基于这个约定时限的类（不如HashMap和HashSet）一起正常的运作。
-
-本章告诉你什么时候以及如何去覆盖Object的非final方法。其中finalize方法并不在本章中讨论，因为Item8里面已经讨论过了。虽然Comparable.compareTo不是Object的方法，但由于它有类似的特征，所以本章中也对它进行了讨论。
-
-### Item10 覆盖equals时请遵守通用规则
+#### Item10 覆盖equals时请遵守通用规则
 
 > Overriding the equals method seems simple, but there are many ways to get it wrong, and consequences can be dire. The easiest way to avoid problems is not to override the equals method, in which case each instance of the class is equal only to itself. This is the right thing to do if any of the following conditions apply:
 
@@ -22,8 +14,8 @@
 
 **并不需要提供”逻辑相等“的测试的类”**。比如java.util.regex.Pattern可以覆盖equals方法来检测两个Pattern实例是否代表同一个正则表达式，但是设计者人为客户端并不需要或者说不想要这样的功能。在这种情况下，直接继承Object类的equals实现是最理想的。
 
-> - **A super class has already over ridden equals,and the super class behavior is appropriate for this class**.  For example, most Set implementations inherit their equals implementation from AbstractSet, List implementations from AbstractList, and Map implementations from AbstractMap.
-> - **The classis private or package-private,and you are certain that its equals method will never be invoked.** If you are extremely risk-averse, you can override the equals method to ensure that it isn’t invoked accidentally.
+> * **A super class has already over ridden equals,and the super class behavior is appropriate for this class**. For example, most Set implementations inherit their equals implementation from AbstractSet, List implementations from AbstractList, and Map implementations from AbstractMap.
+> * **The classis private or package-private,and you are certain that its equals method will never be invoked.** If you are extremely risk-averse, you can override the equals method to ensure that it isn’t invoked accidentally.
 
 **当其父类已经覆盖了equals方法，并且父类的行为也适用的类**。比如，大部分的Set实现类都从AbstractSet那里继承了equals实现，List实现类从AbstractList继承equals实现，Map实现类从AbstractMap继承equals实现。
 
@@ -33,12 +25,11 @@
 @Override public boolean equals(Object o) {
          throw new AssertionError(); // Method is never called
 }
-
 ```
 
-> So when is it appropriate to override equals? It is when a class has a notion of *logical equality* that differs from mere object identity and a superclass has not already overridden equals. This is generally the case for *value classes.* A value class is simply a class that represents a value, such as Integer or String. A programmer who compares references to value objects using the equals method expects to find out whether they are logically equivalent, not whether they refer to the same object. Not only is overriding the equals method necessary to satisfy programmer expectations, it enables instances to serve as map keys or set elements with predictable, desirable behavior.
+> So when is it appropriate to override equals? It is when a class has a notion of _logical equality_ that differs from mere object identity and a superclass has not already overridden equals. This is generally the case for _value classes._ A value class is simply a class that represents a value, such as Integer or String. A programmer who compares references to value objects using the equals method expects to find out whether they are logically equivalent, not whether they refer to the same object. Not only is overriding the equals method necessary to satisfy programmer expectations, it enables instances to serve as map keys or set elements with predictable, desirable behavior.
 >
-> One kind of value class that does *not* require the equals method to be overridden is a class that uses instance control (Item 1) to ensure that at most one object exists with each value. Enum types (Item 34) fall into this category. For these classes, logical equality is the same as object identity, so Object’s equals method functions as a logical equals method.
+> One kind of value class that does _not_ require the equals method to be overridden is a class that uses instance control (Item 1) to ensure that at most one object exists with each value. Enum types (Item 34) fall into this category. For these classes, logical equality is the same as object identity, so Object’s equals method functions as a logical equals method.
 
 那什么是时候需要覆盖equals方法呢？当这个类有逻辑相等的概念（不等同于对象相等的概念），并且父类没有覆盖equals方法。通常是指一些值类。值类是指这个类就是代表一个值，比如Integer或者String类。当程序员使用equals方法来比较两个值对象的引用时，期望知道他们是不是逻辑相等，而不是知道他们是不是指向同一个对象。重新equals方法不仅仅是为了满足程序员的需求，也使得这些实例在作为map的key或者set的元素的时候，出现我们预期的、满意的行为。
 
@@ -46,23 +37,23 @@
 
 > When you override the equals method, you must adhere to its general contract. Here is the contract, from the specification for Object :
 >
-> The equals method implements an *equivalence relation.* It has these properties:
+> The equals method implements an _equivalence relation._ It has these properties:
 >
-> - *Reflexive*: For any non-null reference value x , x.equals(x) must return true.
-> - *Symmetric*: For any non-null reference values x and y , x.equals(y) must return true if and only if y.equals(x) returns true.
-> - *Transitive* : For any non-null reference values x, y, z, if x.equals(y) returns true and y.equals(z) returns true, then x.equals(z) must return true.
-> - *Consistent*: For any non-null reference values x and y, multiple invocations of x.equals(y) must consistently return true or consistently return false, provided no information used in equals comparisons is modified.
-> - For any non-null reference value x, x.equals(null) must return false.
+> * _Reflexive_: For any non-null reference value x , x.equals(x) must return true.
+> * _Symmetric_: For any non-null reference values x and y , x.equals(y) must return true if and only if y.equals(x) returns true.
+> * _Transitive_ : For any non-null reference values x, y, z, if x.equals(y) returns true and y.equals(z) returns true, then x.equals(z) must return true.
+> * _Consistent_: For any non-null reference values x and y, multiple invocations of x.equals(y) must consistently return true or consistently return false, provided no information used in equals comparisons is modified.
+> * For any non-null reference value x, x.equals(null) must return false.
 
 当你想要覆盖equals方法的时候，必须要遵守它的通用约定，下面就是这些约定，来自Object的规范：
 
 equals方法实现了一种等价关系，它的属性如下：
 
-- 自反性：对于任何非null的引用值x，x.equals(x)必须返回true。
-- 对称性：对于任何非null的引用值x，y，当且仅当x.equals(y)返回为true时，y.equals(x)必须返回true。
-- 传递性：对于任意非null的引用值x，y，z，如果 x.equals(y)返回true，并且y.equals(z)返回true，那么x.equals(z)就必须返回true。
-- 一致性：对于任意非空的引用值x，y，只要对象中equals需要的信息没有被修改，那么多次调用 x.equals(y) 的返回值必须一致地返回true，或者一致地返回false。
-- 对于任意非空的引用值x， x.equals(null)必须返回false。
+* 自反性：对于任何非null的引用值x，x.equals(x)必须返回true。
+* 对称性：对于任何非null的引用值x，y，当且仅当x.equals(y)返回为true时，y.equals(x)必须返回true。
+* 传递性：对于任意非null的引用值x，y，z，如果 x.equals(y)返回true，并且y.equals(z)返回true，那么x.equals(z)就必须返回true。
+* 一致性：对于任意非空的引用值x，y，只要对象中equals需要的信息没有被修改，那么多次调用 x.equals(y) 的返回值必须一致地返回true，或者一致地返回false。
+* 对于任意非空的引用值x， x.equals(null)必须返回false。
 
 > Unless you are mathematically inclined, this might look a bit scary, but do not ignore it! If you violate it, you may well find that your program behaves erratically or crashes, and it can be very difficult to pin down the source of the failure. To paraphrase John Donne, no class is an island. Instances of one class are frequently passed to another. Many classes, including all collections classes, depend on the objects passed to them obeying the equals contract.
 >
@@ -72,11 +63,11 @@ equals方法实现了一种等价关系，它的属性如下：
 
 现在已经意识到违反equals约定的危险性。就让我们来详细地看看这些约定。好消息是这些约定表面上看起来复杂，但实际上并不是那么复杂。一旦理解了，要遵守也不难。
 
-> So what is an equivalence relation? Loosely speaking, it’s an operator that partitions a set of elements into subsets whose elements are deemed equal to one another. These subsets are known as *equivalence classes*. For an equals method to be useful, all of the elements in each equivalence class must be interchangeable from the perspective of the user. Now let’s examine the five requirements in turn:
+> So what is an equivalence relation? Loosely speaking, it’s an operator that partitions a set of elements into subsets whose elements are deemed equal to one another. These subsets are known as _equivalence classes_. For an equals method to be useful, all of the elements in each equivalence class must be interchangeable from the perspective of the user. Now let’s examine the five requirements in turn:
 >
 > **Reflexivity**—The first requirement says merely that an object must be equal to itself. It’s hard to imagine violating this one unintentionally. If you were to violate it and then add an instance of your class to a collection, the contains method might well say that the collection didn’t contain the instance that you just added.
 
-什么是对等关系呢？不严格地说，对等关系就是一个将一组元素划分成几个小组的操作，并认为每个分组里的元素是相互相等的，这些分组被称为”等价类（equivalence class）“*这个名字好有歧义*。从用户的角度来看，对于一个可用的equals方法，一个等价类里的所有的元素都是可交换的。现在我们挨着挨着看看这5个要求：
+什么是对等关系呢？不严格地说，对等关系就是一个将一组元素划分成几个小组的操作，并认为每个分组里的元素是相互相等的，这些分组被称为”等价类（equivalence class）“_这个名字好有歧义_。从用户的角度来看，对于一个可用的equals方法，一个等价类里的所有的元素都是可交换的。现在我们挨着挨着看看这5个要求：
 
 **自反性** — 第一个要求就是说一个对象必须和自己相等。很难想象要怎么才能违背这条约定。如果你违背了这条约定，然后将一个类的实例添加到集合里，然后contains方法可能会告诉你集合里没有你刚刚添加的这个实例。
 
@@ -137,7 +128,7 @@ cis.equals(s)会如期返回true。但是问题是CaseInsensitiveString里面的
 }
 ```
 
-> **Transitivity**—The third requirement of the equals contract says that if one object is equal to a second and the second object is equal to a third, then the first object must be equal to the third. Again, it’s not hard to imagine violating this requirement unintentionally. Consider the case of a subclass that adds a new *value component* to its superclass. In other words, the subclass adds a piece of information that affects equals comparisons. Let’s start with a simple immutable two-dimensional integer point class:
+> **Transitivity**—The third requirement of the equals contract says that if one object is equal to a second and the second object is equal to a third, then the first object must be equal to the third. Again, it’s not hard to imagine violating this requirement unintentionally. Consider the case of a subclass that adds a new _value component_ to its superclass. In other words, the subclass adds a piece of information that affects equals comparisons. Let’s start with a simple immutable two-dimensional integer point class:
 
 **传递性** — 第三个要求是说如果一个对象equal to第二个对象，第二个对象equal to第三个对象，那么第一个对象也必须要 equal to 第三个对象。同样地，这条也很容易无意间违背。考虑这样一种情况，一个子类添加一个新的值组件（value component）到其父类中。换句话说就是子类添加的信息影响了equals的比较结果。让我们以一个简单的不可变的二维整形Point类为例：
 
@@ -281,11 +272,11 @@ public class CounterPoint extends Point {
 }
 ```
 
-> The *Liskov substitution principle* says that any important property of a type should also hold for all its subtypes so that any method written for the type should work equally well on its subtypes [Liskov87]. This is the formal statement of our earlier claim that a subclass of Point (such as CounterPoint) is still a Point and must act as one. But suppose we pass a CounterPoint to the onUnitCircle method. If the Point class uses a getClass-based equals method, the onUnitCircle method will return false regardless of the CounterPoint instance’s *x* and *y* coordinates. This is so because most collections, including the HashSet used by the onUnitCircle method, use the equals method to test for containment, and no CounterPoint instance is equal to any Point. If, however, you use a proper instanceof-based equals method on Point, the same onUnitCircle method works fine when presented with a CounterPoint instance.
+> The _Liskov substitution principle_ says that any important property of a type should also hold for all its subtypes so that any method written for the type should work equally well on its subtypes \[Liskov87]. This is the formal statement of our earlier claim that a subclass of Point (such as CounterPoint) is still a Point and must act as one. But suppose we pass a CounterPoint to the onUnitCircle method. If the Point class uses a getClass-based equals method, the onUnitCircle method will return false regardless of the CounterPoint instance’s _x_ and _y_ coordinates. This is so because most collections, including the HashSet used by the onUnitCircle method, use the equals method to test for containment, and no CounterPoint instance is equal to any Point. If, however, you use a proper instanceof-based equals method on Point, the same onUnitCircle method works fine when presented with a CounterPoint instance.
 
 里氏替换原则（liskov substitution principle)认为，一个类的重要的属性，也将适用于它的子类型，因袭该类型中编写的方法就同样适用于其子类。里氏替换原则是我们前面写的内容（Point的子类（比如CounterPoint）仍然是一个Point类，并且拥有Point的功能）的一种比较正式的表达。假设我们给onUnitCircle方法传递一个CounterPoint对象，如果Point类使用的是基于getClass的equals方法，无论我们的CounterPoint对象的x和y的值是什么，onUnitCircle方法总是会返回false，这是因为大部分集合，包括onUnitCircle使用的HashSet在内，都使用equals方法还检测是否包含某对象，而任何的CounterPoint和Pont实例都不相等。但是，如果你在Point中使用基于instanceOf的合适的equals方法，这个onUnitCircle方法在传入一个CounterPoint对象的时候也能正常工作。
 
-> While there is no satisfactory way to extend an instantiable class and add a value component, there is a fine workaround: Follow the advice of Item 18, “Favor composition over inheritance.” Instead of having ColorPoint extend Point, give ColorPoint a private Point field and a public *view* method (Item 6) that returns the point at the same position as this color point:
+> While there is no satisfactory way to extend an instantiable class and add a value component, there is a fine workaround: Follow the advice of Item 18, “Favor composition over inheritance.” Instead of having ColorPoint extend Point, give ColorPoint a private Point field and a public _view_ method (Item 6) that returns the point at the same position as this color point:
 
 虽然面对继承可实例化类，并添加一个值组件时，没有令人满意的方法来重写equals，但是又一个不错的权宜之计：按照Item18的建议，”组合优先于继承“。给ColorPoint添加一个私有的Point域，设置一个公有的视图方法放回和这个colorPoint具有相同位置的Point对象，来代替继承Point对象。如下：
 
@@ -316,7 +307,7 @@ public class CounterPoint extends Point {
 
 > There are some classes in the Java platform libraries that do extend an instantiable class and add a value component. For example, java.sql.Timestamp extends java.util.Date and adds a nanoseconds field. The equals implementation for Timestamp does violate symmetry and can cause erratic behavior if Timestamp and Date objects are used in the same collection or are otherwise intermixed. The Timestamp class has a disclaimer cautioning programmers against mixing dates and timestamps. While you won’t get into trouble as long as you keep them separate, there’s nothing to prevent you from mixing them, and the resulting errors can be hard to debug. This behavior of the Timestamp class was a mistake and should not be emulated.
 >
-> Note that you *can* add a value component to a subclass of an *abstract* class without violating the equals contract. This is important for the sort of class hierarchies that you get by following the advice in Item 23, “Prefer class hierarchies to tagged classes.” For example, you could have an abstract class Shape with no value components, a subclass Circle that adds a radius field, and a subclass Rectangle that adds length and width fields. Problems of the sort shown earlier won’t occur so long as it is impossible to create a superclass instance directly.
+> Note that you _can_ add a value component to a subclass of an _abstract_ class without violating the equals contract. This is important for the sort of class hierarchies that you get by following the advice in Item 23, “Prefer class hierarchies to tagged classes.” For example, you could have an abstract class Shape with no value components, a subclass Circle that adds a radius field, and a subclass Rectangle that adds length and width fields. Problems of the sort shown earlier won’t occur so long as it is impossible to create a superclass instance directly.
 
 在java平台类库里，有一些类继承了可实例化的类还添加了值组件。比如java.sql.Timestamp继承了java.util.Date，还添加了一个nanoseconds 域。Timestamp的equals实现就确实违反了对称性，如果Timestamp对象和Date对象用在同一个集合里，或者以其他的方式混合到一起，就会出现错误的行为。Timestamp类有一个免责声明，告诫程序员不要将Date和Timestamp混用。只要你想他们分开，你就不要遇到任何问题。虽然没有任何东西阻碍你将他们混到一起用，但是出现的错误很难调试。Timestamp类的这种做法不错误的，不要去效仿。
 
@@ -330,7 +321,7 @@ public class CounterPoint extends Point {
 
 不管这个类是不是不可变类，**都不要取决于不可靠的资源的equals方法**。如果你违背了这个禁令，就很难去满足一致性要求。比如java.net.URL里的equals方法依赖于URL里的主机的IP地址的比较，把主机名转换成一个IP地址需要网络服务，而且也不能保证不同时间会返回相同的结果，因为这个IP是会变的。这就使得URL的equals方法违反了equals约定，在实际应用中，也会有问题。所以URL的equals方法的行为也是个大大的错误，不要去模仿。遗憾地是，为了兼容性，这个方法不能修改。为了避免这种问题，equals方法应该根据驻留在内存里的对象进行确定性计算。
 
-> **Non-nullity—**The final requirement lacks an official name, so I have taken the liberty of calling it “non-nullity.” It says that all objects must be unequal to null. While it is hard to imagine accidentally returning true in response to the invocation o.equals(null), it isn’t hard to imagine accidentally throwing a NullPointerException. The general contract prohibits this. Many classes have equals methods that guard against it with an explicit test for null:
+> \*\*Non-nullity—\*\*The final requirement lacks an official name, so I have taken the liberty of calling it “non-nullity.” It says that all objects must be unequal to null. While it is hard to imagine accidentally returning true in response to the invocation o.equals(null), it isn’t hard to imagine accidentally throwing a NullPointerException. The general contract prohibits this. Many classes have equals methods that guard against it with an explicit test for null:
 
 **非空性**—最后一个要求没有官方的名字，作者就给它起了个名字叫“非空性（non-nullity）”。这个要求是说所有的对象和null都必须不相等，很难想象要怎么才能意外地在调用o.equals(null)的时候返回true，但是意外地抛出NullPointerException还是很好想象的。但是约定不允许抛异常，必须返回false。有很多类为了不抛出异常，为null的情况，使用了一个专门的测试如下：
 
@@ -355,7 +346,7 @@ public class CounterPoint extends Point {
 }
 ```
 
-> If this type check were missing and the equals method were passed an argument of the wrong type, the equals method would throw a ClassCastException, which violates the equals contract. But the instanceof operator is specified to return false if its first operand is null, regardless of what type appears in the second operand [JLS, 15.20.2]. Therefore, the type check will return false if null is passed in, so you don’t need an explicit null check.
+> If this type check were missing and the equals method were passed an argument of the wrong type, the equals method would throw a ClassCastException, which violates the equals contract. But the instanceof operator is specified to return false if its first operand is null, regardless of what type appears in the second operand \[JLS, 15.20.2]. Therefore, the type check will return false if null is passed in, so you don’t need an explicit null check.
 
 如果equals方法中没有这个类型检查的话，当传入一个错误的类型的时候，equals方法就会抛出ClassCastException，这也违反了equals约定。而当instanceof操作的第一个操作数是null的时候，不管第二个操作数是什么，都会直接返回false。因此当参数为null的时候，类型检查会直接返回false，就没有必要专门写个null检查。
 
@@ -363,7 +354,6 @@ public class CounterPoint extends Point {
 >
 > 1. **Use the** **==** **operator to check if the argument is a reference to this object.** If so, return true. This is just a performance optimization but one that is worth doing if the comparison is potentially expensive.
 > 2. **Use the** **instanceof** **operator to check if the argument has the correct type.** If not, return false. Typically, the correct type is the class in which the method occurs. Occasionally, it is some interface implemented by this class. Use an interface if the class implements an interface that refines the equals contract to permit comparisons across classes that implement the interface. Collection interfaces such as Set, List, Map, and Map.Entry have this property.
->
 > 3. **Cast the argument to the correct type.** Because this cast was preceded by an instanceof test, it is guaranteed to succeed.
 > 4. **For each “significant” field in the class, check if that field of the argument matches the corresponding field of this object.** If all these tests succeed, return true; otherwise, return false. If the type in Step 2 is an interface, you must access the argument’s fields via interface methods; if the type is a class, you may be able to access the fields directly, depending on their accessibility.
 
@@ -382,19 +372,19 @@ public class CounterPoint extends Point {
 
 一些对象的引用域为null可能是合法的。为了避免抛出NullPointException，可以使用静态方法Objects.equals(Object,Object)方法来比较这种域。
 
-> For some classes, such as CaseInsensitiveString above, field comparisons are more complex than simple equality tests. If this is the case, you may want to store a *canonical form* of the field so the equals method can do a cheap exact comparison on canonical forms rather than a more costly nonstandard comparison. This technique is most appropriate for immutable classes (Item 17); if the object can change, you must keep the canonical form up to date.
+> For some classes, such as CaseInsensitiveString above, field comparisons are more complex than simple equality tests. If this is the case, you may want to store a _canonical form_ of the field so the equals method can do a cheap exact comparison on canonical forms rather than a more costly nonstandard comparison. This technique is most appropriate for immutable classes (Item 17); if the object can change, you must keep the canonical form up to date.
 
 对于一些类，比如前面提到的CaseInsensitiveString，它的域的比较就很复杂，不是简单相等的检查。在这种情况下，可以保存一个这个域的“范式”，然后在equals方法中就可以直接精确地比较这个范式，开销比较低，而不是进行开销高、不精确的比较。这种技术最适合不可变类了（Item10），因为如果这个类可变的话，它的范式也必须跟着变。
 
-> The performance of the equals method may be affected by the order in which fields are compared. For best performance, you should first compare fields that are more likely to differ, less expensive to compare, or, ideally, both. You must not compare fields that are not part of an object’s logical state, such as lock fields used to synchronize operations. You need not compare *derived fields*, which can be calculated from “significant fields,” but doing so may improve the performance of the equals method. If a derived field amounts to a summary description of the entire object, comparing this field will save you the expense of comparing the actual data if the comparison fails. For example, suppose you have a Polygon class, and you cache the area. If two polygons have unequal areas, you needn’t bother comparing their edges and vertices.
+> The performance of the equals method may be affected by the order in which fields are compared. For best performance, you should first compare fields that are more likely to differ, less expensive to compare, or, ideally, both. You must not compare fields that are not part of an object’s logical state, such as lock fields used to synchronize operations. You need not compare _derived fields_, which can be calculated from “significant fields,” but doing so may improve the performance of the equals method. If a derived field amounts to a summary description of the entire object, comparing this field will save you the expense of comparing the actual data if the comparison fails. For example, suppose you have a Polygon class, and you cache the area. If two polygons have unequal areas, you needn’t bother comparing their edges and vertices.
 
-对象域的比较顺序会影响equals方法的性能。为了性能最优，应该先比较那些最容易不同的、比较代价小的、或者两者都占的域。千万不要去比较那些不是这个类的逻辑状态的域，比如用来同步计算的锁域。也没必要去比较那些“衍生域（derived fields）”，它们会在计算重要域（significant fields）的时候被计算，但是如果比较这些域可以带来性能提升的时候例外。假如一个衍生域表示的是整个类的总体描述，在比较结果是false的时候，相对于比较原始数据，比较这个衍生域可以减少开销。比如，现在有一个Polygon类，然后你缓存了它的面积area（*这个面积就是衍生域*）。当两个polygon实例的面积area不同的时候就不需要去比较它的边和顶点了。
+对象域的比较顺序会影响equals方法的性能。为了性能最优，应该先比较那些最容易不同的、比较代价小的、或者两者都占的域。千万不要去比较那些不是这个类的逻辑状态的域，比如用来同步计算的锁域。也没必要去比较那些“衍生域（derived fields）”，它们会在计算重要域（significant fields）的时候被计算，但是如果比较这些域可以带来性能提升的时候例外。假如一个衍生域表示的是整个类的总体描述，在比较结果是false的时候，相对于比较原始数据，比较这个衍生域可以减少开销。比如，现在有一个Polygon类，然后你缓存了它的面积area（_这个面积就是衍生域_）。当两个polygon实例的面积area不同的时候就不需要去比较它的边和顶点了。
 
 > **When you are finished writing your** **equals** **method, ask yourself three questions: Is it symmetric? Is it transitive? Is it consistent?** And don’t just ask yourself; write unit tests to check, unless you used AutoValue (page 49) to generate your equals method, in which case you can safely omit the tests. If the properties fail to hold, figure out why, and modify the equals method accordingly. Of course your equals method must also satisfy the other two properties (reflexivity and non-nullity), but these two usually take care of themselves.
 >
 > An equals method constructed according to the previous recipe is shown in this simplistic PhoneNumber class:
 
-**在编写完equals方法后，问自己三个问题：它满足对称性吗？满足传递性吗？满足一致性吗？**除了问自己以外，还需要写单元测试来检查一下，除非你使用AutoValue（page49）来生成equals方法，这种情况下可以放心地省略测试。当你做这些测试失败后，需要找出来为什么错，然后据此修改equals方法。当然我们的equals方法也需要满足自反性和非空性，但是这两个特性通常自己就满足。
+\*\*在编写完equals方法后，问自己三个问题：它满足对称性吗？满足传递性吗？满足一致性吗？\*\*除了问自己以外，还需要写单元测试来检查一下，除非你使用AutoValue（page49）来生成equals方法，这种情况下可以放心地省略测试。当你做这些测试失败后，需要找出来为什么错，然后据此修改equals方法。当然我们的equals方法也需要满足自反性和非空性，但是这两个特性通常自己就满足。
 
 通过前面那些诀窍写的一个简单的PhoneNumber类的equals方法如下：
 
@@ -423,7 +413,6 @@ public class CounterPoint extends Point {
 					}
        ... // Remainder omitted
    }
-
 ```
 
 > Here are a few final caveats:
@@ -432,13 +421,13 @@ public class CounterPoint extends Point {
 >
 > • **Don’t try to be too clever.** If you simply test fields for equality, it’s not hard to adhere to the equals contract. If you are overly aggressive in searching for equivalence, it’s easy to get into trouble. It is generally a bad idea to take any form of aliasing into account. For example, the File class shouldn’t attempt to equate symbolic links referring to the same file. Thankfully, it doesn’t.
 >
-> • **Don’t substitute another type for Object in the equals declaration.**It is not uncommon for a programmer to write an equals method that looks like this and then spend hours puzzling over why it doesn’t work properly:
+> • \*\*Don’t substitute another type for Object in the equals declaration.\*\*It is not uncommon for a programmer to write an equals method that looks like this and then spend hours puzzling over why it doesn’t work properly:
 
 这里还有一些最后的忠告：
 
-- **在覆盖equals方法的时候总要覆盖hashcode方法（Item1）**。
-- **不要让equals方法太过智能**。如果你只是简单地检测各个域是否相等，遵守equals的约定一点也不难。但当你想过度地去寻求各种等价关系，就很容易出问题。通常情况下，把任何一种别名形式放在equals考虑的范围内都不是一个好主意，比如File类就不应该把指向同一个文件的符号链接（symbolic links）拿来比较，幸运的是，File没有这样做。
-- **在equals方法里不要使用其他的类型替代Object。**程序员写一个下面这样的equals方法很常见，花好几个小时都不知道为啥有问题。
+* **在覆盖equals方法的时候总要覆盖hashcode方法（Item1）**。
+* **不要让equals方法太过智能**。如果你只是简单地检测各个域是否相等，遵守equals的约定一点也不难。但当你想过度地去寻求各种等价关系，就很容易出问题。通常情况下，把任何一种别名形式放在equals考虑的范围内都不是一个好主意，比如File类就不应该把指向同一个文件的符号链接（symbolic links）拿来比较，幸运的是，File没有这样做。
+* \*\*在equals方法里不要使用其他的类型替代Object。\*\*程序员写一个下面这样的equals方法很常见，花好几个小时都不知道为啥有问题。
 
 ```java
 // Broken - parameter type must be Object!
@@ -447,7 +436,7 @@ public class CounterPoint extends Point {
 }
 ```
 
-> The problem is that this method does not *override* Object.equals, whose argument is of type Object, but *overloads* it instead (Item 52). It is unacceptable to provide such a “strongly typed” equals method even in addition to the normal one, because it can cause Override annotations in subclasses to generate false positives and provide a false sense of security.
+> The problem is that this method does not _override_ Object.equals, whose argument is of type Object, but _overloads_ it instead (Item 52). It is unacceptable to provide such a “strongly typed” equals method even in addition to the normal one, because it can cause Override annotations in subclasses to generate false positives and provide a false sense of security.
 >
 > Consistent use of the Override annotation, as illustrated throughout this item, will prevent you from making this mistake (Item 40). This equals method won’t compile, and the error message will tell you exactly what is wrong:
 
@@ -473,4 +462,4 @@ public class CounterPoint extends Point {
 
 总结一下，若非必要不要覆盖equals方法，因为很多情况下，从Object继承到的equals的实现就刚好是你想要的。如果确实需要覆盖equals方法，确保比较类的所有的重要的域，并且在比较的时候要注意不要违背了equals给的五条约定。
 
-### 
+##

@@ -1,10 +1,4 @@
-## 2 创建和销毁对象
-
-> This chapter concerns creating and destroying objects: when and how to create them, when and how to avoid creating them, how to ensure they are destroyed in a timely manner, and how to manage any cleanup actions that must precede their destruction.
-
-本章关心的是对象的创建和销毁过程，主要涉及的问题有：什么时候需要创建对象以及如何去创建，什么时候需要避免创建对象以及如何避免，如何保证对象被及时销毁，和怎么去管理那些必须在对象被销毁前进行的清理动作。
-
-### Item1 考虑使用静态方法替代构造器
+# Item1 考虑使用静态方法替代构造器
 
 > The traditional way for a class to allow a client to obtain an instance is to provide a public constructor. There is another technique that should be a part of every programmer’s toolkit. A class can provide a public static factory method, which is simply a static method that returns an instance of the class. Here’s a simple example from Boolean(the boxed primitive class for boolean). This method translates a boolean primitive value into a Boolean object reference:
 
@@ -16,7 +10,7 @@ public static Boolean valueOf(boolean b) {
 }
 ```
 
-> Note that a static factory method is not the same as the Factory Method pattern from *Design Patterns*[Gamma95]. The static factory method described in this item has no direct equivalent in Design Patterns.
+> Note that a static factory method is not the same as the Factory Method pattern from _Design Patterns_\[Gamma95]. The static factory method described in this item has no direct equivalent in Design Patterns.
 
 需要注意的是，这里的静态工厂方法不直接等于设计模式里的工厂方法模式。
 
@@ -36,11 +30,11 @@ public static Boolean valueOf(boolean b) {
 
 **静态工厂方法的第二个优势就在于没有必要在每次调用的时候都返回一个新的对象，而构造器就不行。** 这个优点使得那些不可变类可以使用之前创建好的对象，或者缓缓存号已经创建好的对象，以重复的利用这些对象，避免创建没有必要的重复的对象。
 
-> The Boolean.valueOf(boolean) method illustrates this technique: it never creates an object. This technique is similar to the Flyweight pattern [Gamma95]. It can greatly improve performance if equivalent objects are requested often, especially if they are expensive to create.
+> The Boolean.valueOf(boolean) method illustrates this technique: it never creates an object. This technique is similar to the Flyweight pattern \[Gamma95]. It can greatly improve performance if equivalent objects are requested often, especially if they are expensive to create.
 
 比如Boolean.valueOf(boolean)方法就是利用了这点，它永远不会创建对象。这种方式和[享元模式 (Flyweight pattern )](https://www.runoob.com/design-pattern/flyweight-pattern.html)类似，当总是频繁的创建相同的对象，且创建开销较大时，能很好的提升性能。
 
-> The ability of static factory methods to return the same object from repeated invocations allows classes to maintain strict control over what instances exist at any time. Classes that do this are said to be instance-controlled.There are several reasons to write instance-controlled classes. Instance control allows a class to guarantee that it is a singleton (Item 3) or noninstantiable (Item 4). Also, it allows an immutable value class (Item 17) to make the guarantee that no two equal instances exist: a.equals(b) if and only if a == b*.* This is the basis of the Flyweight pattern [Gamma95]. Enum types (Item 34) provide this guarantee.
+> The ability of static factory methods to return the same object from repeated invocations allows classes to maintain strict control over what instances exist at any time. Classes that do this are said to be instance-controlled.There are several reasons to write instance-controlled classes. Instance control allows a class to guarantee that it is a singleton (Item 3) or noninstantiable (Item 4). Also, it allows an immutable value class (Item 17) to make the guarantee that no two equal instances exist: a.equals(b) if and only if a == b\*.\* This is the basis of the Flyweight pattern \[Gamma95]. Enum types (Item 34) provide this guarantee.
 
 静态工厂方法的这种 当重复调用时 返回同一对象 的能力，使得该类可以严格的控制任何时刻可以存在的实例对象。我们将这种类称为实体控制类。一般在以下情况下编写实体控制类： 第一种情况是通过实体控制保证该类是单例(Item3)的，或者不可初始化的(Item4)；第二种情况是通过实体控制保证不可变类不会同时存在两个相同的实例，即只有当a==b为true的时候，a.equals(b) 为true。这些也是享元模式的基础。枚举类型也能提供这种保证。
 
@@ -48,7 +42,7 @@ public static Boolean valueOf(boolean b) {
 >
 > One application of this flexibility is that an API can return objects without making their classes public. Hiding implementation classes in this fashion leads to a very compact API. This technique lends itself to interface-based frameworks(Item 20), where interfaces provide natural return types for static factory methods.
 >
-> Prior to Java 8, interfaces couldn’t have static methods. By convention, static factory methods for an interface named *Type* were put in a noninstantiable companion class(Item 4) named *Types*. For example, the Java Collections Framework has forty-five utility implementations of its interfaces, providing unmodifiable collections, synchronized collections, and the like. Nearly all of these implementations are exported via static factory methods in one noninstantiable class (java.util.Collections). The classes of the returned objects are all nonpublic.
+> Prior to Java 8, interfaces couldn’t have static methods. By convention, static factory methods for an interface named _Type_ were put in a noninstantiable companion class(Item 4) named _Types_. For example, the Java Collections Framework has forty-five utility implementations of its interfaces, providing unmodifiable collections, synchronized collections, and the like. Nearly all of these implementations are exported via static factory methods in one noninstantiable class (java.util.Collections). The classes of the returned objects are all nonpublic.
 
 静态工厂方法的第三个优点是可以返回原返回类型的任意子类型对象，而构造器不行。这个优点让我们可以更加灵活的选择类的返回对象。
 
@@ -64,13 +58,13 @@ public static Boolean valueOf(boolean b) {
 
 在Java8里， 去除了接口不能包含静态方法的限制，因此没有理由再为一个接口提供一个不可实例化的伙伴类了。很多应该放在伙伴类里的静态变量，现在都应该放在接口里了。然而，由于Java8 中要求所有的静态成员必须是私有的，因此还是有必要将一部分代码放在一个单独的包私有类的静态方法里。在Java9里允许接口包含私有的静态方法，但是静态域和静态类成员还是必须是公有的。
 
->**A fourth advantage of static factories is that the class of the returned object can vary from call to call as a function of the input parameters.** Any subtype of the declared return type is permissible. The class of the returned object can also vary from release to release.
+> **A fourth advantage of static factories is that the class of the returned object can vary from call to call as a function of the input parameters.** Any subtype of the declared return type is permissible. The class of the returned object can also vary from release to release.
 >
->The *EnumSet* class (Item 36) has no public constructors, only static factories. In the OpenJDK implementation, they return an instance of one of two subclasses, depending on the size of the underlying enum type: if it has sixty-four or fewer elements, as most enum types do, the static factories return a *RegularEnumSet* instance, which is backed by a single *long*; if the enum type has sixty-five or more elements, the factories return *a JumboEnumSet* instance, backed by a *long* array.
+> The _EnumSet_ class (Item 36) has no public constructors, only static factories. In the OpenJDK implementation, they return an instance of one of two subclasses, depending on the size of the underlying enum type: if it has sixty-four or fewer elements, as most enum types do, the static factories return a _RegularEnumSet_ instance, which is backed by a single _long_; if the enum type has sixty-five or more elements, the factories return _a JumboEnumSet_ instance, backed by a _long_ array.
 >
->The existence of these two implementation classes is invisible to clients. If *RegularEnumSet* ceased to offer performance advantages for small enum types, it could be eliminated from a future release with no ill effects. Similarly, a future release could add a third or fourth implementation of *EnumSet* if it proved beneficial for performance. Clients neither know nor care about the class of the object they get back from the factory; they care only that it is some subclass of *EnumSet*.
+> The existence of these two implementation classes is invisible to clients. If _RegularEnumSet_ ceased to offer performance advantages for small enum types, it could be eliminated from a future release with no ill effects. Similarly, a future release could add a third or fourth implementation of _EnumSet_ if it proved beneficial for performance. Clients neither know nor care about the class of the object they get back from the factory; they care only that it is some subclass of _EnumSet_.
 
-**静态工厂方法的第四个优势是，可以根据传入的参数返回不同类型的对象。**返回对象类型可以是声明的返回类型的任意子类型。返回对象的类型也可以根据发行版本的不同而不同。
+\*\*静态工厂方法的第四个优势是，可以根据传入的参数返回不同类型的对象。\*\*返回对象类型可以是声明的返回类型的任意子类型。返回对象的类型也可以根据发行版本的不同而不同。
 
 EnumSet类(Item36)没有公有的构造器，只有静态工厂方法，在OpenJDK的实现中，其静态工厂方法会根据底层枚举类型的大小来返回两个子类中的一个实例。如果该枚举类和大多数实例一样，包含的元素少于或等于64个，那么其静态工厂方法将会返回一个 由单个long支持的RegularEnumSet实例；否则，将返回一个有long数组支持的JumboEnumSet实例。
 
@@ -84,11 +78,11 @@ EnumSet类(Item36)没有公有的构造器，只有静态工厂方法，在OpenJ
 
 一个服务提供框架包括三个基本的组件：用于展示实现的服务接口，用于提供者注册实现的提供者注册api，用于客户端获取服务实例的服务访问api。服务访问api根据客户端的指定内容选择具体的实现，如果没有指定，则返回一个默认的实现，或者是允许客户端循环使用所有可用的实现。服务访问api就是灵活的静态工厂方法，它们组成了服务提供者框架的基础。
 
->An optional fourth component of a service provider framework is a service provider interface, which describes a factory object that produce instances of the service interface. In the absence of a service provider interface, implementations must be instantiated reflectively (Item 65). In the case of JDBC, *Connection* plays the part of the service interface, *DriverManager.registerDriver* is the provider registration API, *DriverManager.getConnection* is the service access API, and *Driver* is the service provider interface.
+> An optional fourth component of a service provider framework is a service provider interface, which describes a factory object that produce instances of the service interface. In the absence of a service provider interface, implementations must be instantiated reflectively (Item 65). In the case of JDBC, _Connection_ plays the part of the service interface, _DriverManager.registerDriver_ is the provider registration API, _DriverManager.getConnection_ is the service access API, and _Driver_ is the service provider interface.
 >
->There are many variants of the service provider framework pattern. For example, the service access API can return a richer service interface to clients than the one furnished by providers. This is the *Bridge* pattern [Gamma95]. Dependency injection frameworks (Item 5) can be viewed as powerful service providers. Since Java 6, the platform includes a general-purpose service provider framework, *java.util.ServiceLoader*, so you needn’t, and generally shouldn’t, write your own (Item 59). JDBC doesn’t use *ServiceLoader*, as the former predates the latter.
+> There are many variants of the service provider framework pattern. For example, the service access API can return a richer service interface to clients than the one furnished by providers. This is the _Bridge_ pattern \[Gamma95]. Dependency injection frameworks (Item 5) can be viewed as powerful service providers. Since Java 6, the platform includes a general-purpose service provider framework, _java.util.ServiceLoader_, so you needn’t, and generally shouldn’t, write your own (Item 59). JDBC doesn’t use _ServiceLoader_, as the former predates the latter.
 
-除了以上三个组件外，另外一个可选择的组件是服务提供接口。服务提供接口描述了生产服务实例的工厂对象。在缺少服务提供接口是，具体的实现必须通过反着进行初始化。以JDBC为例，  Connection是服务接口，DriverManager.registerDriver是提供者注册api，DriverManager.getConnection是服务访问api，Driver是服务提供接口。
+除了以上三个组件外，另外一个可选择的组件是服务提供接口。服务提供接口描述了生产服务实例的工厂对象。在缺少服务提供接口是，具体的实现必须通过反着进行初始化。以JDBC为例， Connection是服务接口，DriverManager.registerDriver是提供者注册api，DriverManager.getConnection是服务访问api，Driver是服务提供接口。
 
 服务提供框架有很多的变种。比如服务访问api可以给客服端提供一个比提供者提供的服务更为丰富的服务，也就是桥接模式。依赖注入框架(Item5)可以看做是一个更强大的服务提供者。从Java6 开始，jdk中包含了一个通用的服务提供框架 java.util.ServiceLoader，所以你不需要也不应该写一个自己的框架(Item59）。JDBC没有使用ServiceLoader，因为JDBC在Java6之前就存在了。
 
@@ -96,11 +90,11 @@ EnumSet类(Item36)没有公有的构造器，只有静态工厂方法，在OpenJ
 >
 > **A second shortcoming of static factory methods is that they are hard for programmers to find.** They do not stand out in API documentation in the way that constructors do, so it can be difficult to figure out how to instantiate a class that provides static factory methods instead of constructors. The Javadoc tool may someday draw attention to static factory methods. In the meantime, you can reduce this problem by drawing attention to static factories in class or interface documentation and by adhering to common naming conventions. Here are some common names for static factory methods. This list is far from exhaustive:
 
-**静态工厂方法主要的不足在于没有公有或者受保护的构造器的类不能子类化。**比如，在集合框架中，所有的便利实现都不能拥有子类。但这也鼓励程序员使用组合代替继承(Item18)，并且这也是不可变类型所需要的，因此也算是因祸得福了。
+\*\*静态工厂方法主要的不足在于没有公有或者受保护的构造器的类不能子类化。\*\*比如，在集合框架中，所有的便利实现都不能拥有子类。但这也鼓励程序员使用组合代替继承(Item18)，并且这也是不可变类型所需要的，因此也算是因祸得福了。
 
 **静态工厂方法的另一个不足在于程序员很难找到他们。** 因为静态工厂方法不会像狗再起一样在API文档中标注出来。导致难以知道如何去初始化一个只提供静态工厂方法的类。Javadoc工具在未来可能会加标注在静态工厂方法上。同时，你可以多注意类和接口文档里的静态工厂方法，并且遵守通用的命名规则来减少这种问题。下面列举了一部分通用的静态工厂方法的名字。
 
->  • *from*—A type-conversion method that takes a single parameter and returns a corresponding instance of this type, for example:
+> • _from_—A type-conversion method that takes a single parameter and returns a corresponding instance of this type, for example:
 
 from—一种类型转换方法，通过传入单个参数，返回一个该类型的实例。比如：
 
@@ -108,8 +102,7 @@ from—一种类型转换方法，通过传入单个参数，返回一个该类�
 Date d = Date.from(instant);
 ```
 
-> **•** *of*—An aggregation method that takes multiple parameters and returns an instance of this type that incorporates them, for
-> example:
+> **•** _of_—An aggregation method that takes multiple parameters and returns an instance of this type that incorporates them, for example:
 
 of—一种聚合方法，通过传入多个参数，返回一个包含这些参数的类型实例。比如
 
@@ -117,7 +110,7 @@ of—一种聚合方法，通过传入多个参数，返回一个包含这些参
 Set<Rank> faceCards = EnumSet.of(JACK, QUEEN, KING);
 ```
 
-> • *valueOf*—A more verbose alternative to *from* and *of*, for example:
+> • _valueOf_—A more verbose alternative to _from_ and _of_, for example:
 
 valueOf—用于替换from和of的一种更为详细的方法名。比如
 
@@ -125,7 +118,7 @@ valueOf—用于替换from和of的一种更为详细的方法名。比如
 BigInteger prime = BigInteger.valueOf(Integer.MAX_VALUE);
 ```
 
-> • *instance or getInstance*—Returns an instance that is described by its parameters (if any) but cannot be said to have the same value, for example:
+> • _instance or getInstance_—Returns an instance that is described by its parameters (if any) but cannot be said to have the same value, for example:
 
 instance or getInstance—返回一个有参数（如果有的话）描述的实例，但参数一致的时候，实例也可能不一样。比如
 
@@ -133,7 +126,7 @@ instance or getInstance—返回一个有参数（如果有的话）描述的实
 StackWalker luke = StackWalker.getInstance(options);
 ```
 
-> • *create or newInstance*—Like instance or getInstance, except that the method guarantees that each call returns a new instance, for example:
+> • _create or newInstance_—Like instance or getInstance, except that the method guarantees that each call returns a new instance, for example:
 
 create or newInstance— 和instance or getInstance类似，但是保证每次调用都返回新的实例。比如
 
@@ -141,7 +134,7 @@ create or newInstance— 和instance or getInstance类似，但是保证每次�
 Object newArray = Array.newInstance(classObject, arrayLen);
 ```
 
->  • *getType*—Like getInstance, but used if the factory method is in a different class. Type is the type of object returned by the factory method, for example:
+> • _getType_—Like getInstance, but used if the factory method is in a different class. Type is the type of object returned by the factory method, for example:
 
 getType—和getInstance类似，在工厂方法包含在其他类里时使用，Type就是其返回实例的Type。比如。
 
@@ -149,7 +142,7 @@ getType—和getInstance类似，在工厂方法包含在其他类里时使用�
 FileStore fs = Files.getFileStore(path);
 ```
 
->  •*newType*—Like newInstance, but used if the factory method is in a different class. Type is the type of object returned by the factory method, for example:
+> •_newType_—Like newInstance, but used if the factory method is in a different class. Type is the type of object returned by the factory method, for example:
 
 getType—和newInstance类似，在工厂方法包含在其他类里时使用，Type就是其返回实例的Type。比如。
 
@@ -157,7 +150,7 @@ getType—和newInstance类似，在工厂方法包含在其他类里时使用�
 BufferedReader br = Files.newBufferedReader(path);
 ```
 
-> •*type*—A concise alternative to *getType* and *newType*, for example:
+> •_type_—A concise alternative to _getType_ and _newType_, for example:
 
 type—getType和newType的更加简洁的表达，比如。
 
