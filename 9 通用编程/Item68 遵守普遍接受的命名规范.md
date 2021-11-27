@@ -1,22 +1,22 @@
-### Item68 遵守普遍接受的命名规范
+# Item68 遵守普遍接受的命名规范
 
-> The Java platform has a well-established set of *naming conventions*, many of which are contained in *The Java Language Specification* [JLS, 6.1]. Loosely speaking, naming conventions fall into two categories: typographical and grammatical.
+> The Java platform has a well-established set of _naming conventions_, many of which are contained in _The Java Language Specification_ \[JLS, 6.1]. Loosely speaking, naming conventions fall into two categories: typographical and grammatical.
 
-Java平台有一套很好的命名规范，有很多都包含在了“Java语言规范”里面[JLS, 6.1]。粗略来说，命名规范可以分为两大类：字面上的和语法的。
+Java平台有一套很好的命名规范，有很多都包含在了“Java语言规范”里面\[JLS, 6.1]。粗略来说，命名规范可以分为两大类：字面上的和语法的。
 
 > There are only a handful of typographical naming conventions, covering packages, classes, interfaces, methods, fields, and type variables. You should rarely violate them and never without a very good reason. If an API violates these conventions, it may be difficult to use. If an implementation violates them, it may be difficult to maintain. In both cases, violations have the potential to confuse and irritate other programmers who work with the code and can cause faulty assumptions that lead to errors. The conventions are summarized in this item.
 
 有一堆的字面上的命名规范，覆盖了包、类、接口、方法、域和类型变量。不到万不得已，千万不要违反这些规范。如果一个API违反了这些规范，那么它用起来就很难。如果一个实现违反了这些规范，那么就会很难维护。在这两种情况下，违反规范都会潜在地造成其他和这些代码一起工作的程序员带来苦恼，可能造成一些会导致问题的有缺陷的假设。在本节中对这些规范进行了总结。
 
-> Package and module names should be hierarchical with the components separated by periods. Components should consist of lowercase alphabetic characters and, rarely, digits. The name of any package that will be used outside your organization should begin with your organization’s Internet domain name with the components reversed, for example, edu.cmu, com.google, org.eff. The standard libraries and optional packages, whose names begin with java and javax, are exceptions to this rule. Users must not create packages or modules whose names begin with java or javax. Detailed rules for converting Internet domain names to package name prefixes can be found in the JLS [JLS, 6.1].
+> Package and module names should be hierarchical with the components separated by periods. Components should consist of lowercase alphabetic characters and, rarely, digits. The name of any package that will be used outside your organization should begin with your organization’s Internet domain name with the components reversed, for example, edu.cmu, com.google, org.eff. The standard libraries and optional packages, whose names begin with java and javax, are exceptions to this rule. Users must not create packages or modules whose names begin with java or javax. Detailed rules for converting Internet domain names to package name prefixes can be found in the JLS \[JLS, 6.1].
 
-包和模块名字应该是层次结构的，各个部分使用句号进行分隔。每部分应该是由小写的字符组成的，或者是数字。任何要在你的组织之外使用的包，其名字应该是你的组织的互联网域名倒过来组成每一部分，比如 edu.cmu, com.google, org.eff。标准类库和可选择的包使用java和javax开头，是这个规则的一个例外。用户决不能使用java和javax作为自己创建的包或者模块的开头。关于把互联网域名转换为包名前缀的细节请查看JLS [JLS, 6.1]。
+包和模块名字应该是层次结构的，各个部分使用句号进行分隔。每部分应该是由小写的字符组成的，或者是数字。任何要在你的组织之外使用的包，其名字应该是你的组织的互联网域名倒过来组成每一部分，比如 edu.cmu, com.google, org.eff。标准类库和可选择的包使用java和javax开头，是这个规则的一个例外。用户决不能使用java和javax作为自己创建的包或者模块的开头。关于把互联网域名转换为包名前缀的细节请查看JLS \[JLS, 6.1]。
 
 > The remainder of a package name should consist of one or more components describing the package. Components should be short, generally eight or fewer characters. Meaningful abbreviations are encouraged, for example, util rather than utilities. Acronyms are acceptable, for example, awt. Components should generally consist of a single word or abbreviation.
 
 包名中剩下的一个或多个部分是用来描述这个包的，这些部分应该竟可能的简洁，通常来说包含8个或者更少的字符。建议使用一些有意义的缩略词，比如，util而不是utilities。首字母缩略词也是可以接受的，比如，awt。每个部分通常都包含一个单词或者一个缩略词。
 
-> Many packages have names with just one component in addition to the Internet domain name. Additional components are appropriate for large facilities whose size demands that they be broken up into an informal hierarchy. For example, the javax.util package has a rich hierarchy of packages with names such as java.util.concurrent.atomic. Such packages are known as *subpackages*, although there is almost no linguistic support for package hierarchies.
+> Many packages have names with just one component in addition to the Internet domain name. Additional components are appropriate for large facilities whose size demands that they be broken up into an informal hierarchy. For example, the javax.util package has a rich hierarchy of packages with names such as java.util.concurrent.atomic. Such packages are known as _subpackages_, although there is almost no linguistic support for package hierarchies.
 
 有很多的包，除了互联网域名以外，就只有一个部分。对于大型的项目而言，增加一些部分是很有必要的，因为项目的规模要求它们分割成一个非正式的层次结构。比如 javax.util 包就有一个基于名字的丰富的层次结构，比如java.util.concurrent.atomic。这种包被称为子包，但是Java语言中对于包层次并没有什么语言层面的支持。
 
@@ -28,9 +28,9 @@ Java平台有一套很好的命名规范，有很多都包含在了“Java语言
 
 方法和域名的字面上的命名规范与类和接口的一样，只是方法和域的名字的第一个字母需要小写。比如remove和ensureCapacity。如果有一个首字母缩略词出现在方法或者域名字的第一个单词的问题，那么它应该小写。
 
-> The sole exception to the previous rule concerns “constant fields,” whose names should consist of one or more uppercase words separated by the underscore character, for example, VALUES or NEGATIVE_INFINITY. A constant field is a static final field whose value is immutable. If a static final field has a primitive type or an immutable reference type (Item 17), then it is a constant field. For example, enum constants are constant fields. If a static final field has a mutable reference type, it can still be a constant field if the referenced object is immutable. Note that constant fields constitute the *only* recommended use of underscores.
+> The sole exception to the previous rule concerns “constant fields,” whose names should consist of one or more uppercase words separated by the underscore character, for example, VALUES or NEGATIVE\_INFINITY. A constant field is a static final field whose value is immutable. If a static final field has a primitive type or an immutable reference type (Item 17), then it is a constant field. For example, enum constants are constant fields. If a static final field has a mutable reference type, it can still be a constant field if the referenced object is immutable. Note that constant fields constitute the _only_ recommended use of underscores.
 
-前面这一规则的一个单独的例外，是关于”常量域“的，它的名字应该是包含一个或者多个使用下划线隔开的大写单词的。比如 VALUES 或者NEGATIVE_INFINITY。一个常量域是一个静态final域的话，它的值是不可变的。如果静态final域持有的类型是基本类型或者不可变引用类型（Item17），那么它就是一个常量域。比如枚举常量都是常量域。如果一个静态final域持有的类型是可变引用类型，如果它引用的对象不可变的话，它还是一个常量域。注意，常量域是唯一推荐使用下划线的场景。
+前面这一规则的一个单独的例外，是关于”常量域“的，它的名字应该是包含一个或者多个使用下划线隔开的大写单词的。比如 VALUES 或者NEGATIVE\_INFINITY。一个常量域是一个静态final域的话，它的值是不可变的。如果静态final域持有的类型是基本类型或者不可变引用类型（Item17），那么它就是一个常量域。比如枚举常量都是常量域。如果一个静态final域持有的类型是可变引用类型，如果它引用的对象不可变的话，它还是一个常量域。注意，常量域是唯一推荐使用下划线的场景。
 
 > Local variable names have similar typographical naming conventions to member names, except that abbreviations are permitted, as are individual characters and short sequences of characters whose meaning depends on the context in which they occur, for example, i, denom, houseNum. Input parameters are a special kind of local variable. They should be named much more carefully than ordinary local variables, as their names are an integral part of their method’s documentation.
 
@@ -44,14 +44,14 @@ Java平台有一套很好的命名规范，有很多都包含在了“Java语言
 
 为了可以快速地查询，下面这个表格展示了这些字面规范的例子：
 
-| 标识符类型 | 示例                                             |
-| ---------- | ------------------------------------------------ |
+| 标识符类型 | 示例                                               |
+| ----- | ------------------------------------------------ |
 | 包或者模块 | org.junit.jupiter.api, com.google.common.collect |
 | 类或者接口 | Stream, FutureTask, LinkedHashMap, HttpClient    |
 | 方法或者域 | remove, groupingBy, getCrc                       |
-| 常量域     | MIN_VALUE, NEGATIVE_INFINITY                     |
-| 本地变量   | i, denom, houseNum                               |
-| 类型参数   | T,E,K,V,X,R,U,V,T1,T2                            |
+| 常量域   | MIN\_VALUE, NEGATIVE\_INFINITY                   |
+| 本地变量  | i, denom, houseNum                               |
+| 类型参数  | T,E,K,V,X,R,U,V,T1,T2                            |
 
 > Grammatical naming conventions are more flexible and more controversial than typographical conventions. There are no grammatical naming conventions to speak of for packages. Instantiable classes, including enum types, are generally named with a singular noun or noun phrase, such as Thread, PriorityQueue, or ChessPiece. Non-instantiable utility classes (Item 4) are often named with a plural noun, such as Collectors or Collections. Interfaces are named like classes, for example, Collection or Comparator, or with an adjective ending in able or ible, for example, Runnable, Iterable, or Accessible. Because annotation types have so many uses, no part of speech predominates. Nouns, verbs, prepositions, and adjectives are all common, for example, BindingAnnotation, Inject, ImplementedBy, or Singleton.
 
@@ -70,18 +70,18 @@ Java平台有一套很好的命名规范，有很多都包含在了“Java语言
        generateAudibleAlert("Watch out for cops!");
 ```
 
-> The form beginning with get has its roots in the largely obsolete *Java Beans* specification, which formed the basis of an early reusable component architecture. There are modern tools that continue to rely on the Beans naming convention, and you should feel free to use it in any code that is to be used in conjunction with these tools. There is also a strong precedent for following this naming convention if a class contains both a setter and a getter for the same attribute. In this case, the two methods are typically named get*Attribute* and set*Attribute*.
+> The form beginning with get has its roots in the largely obsolete _Java Beans_ specification, which formed the basis of an early reusable component architecture. There are modern tools that continue to rely on the Beans naming convention, and you should feel free to use it in any code that is to be used in conjunction with these tools. There is also a strong precedent for following this naming convention if a class contains both a setter and a getter for the same attribute. In this case, the two methods are typically named get_Attribute_ and set_Attribute_.
 
 这种以get开头的命名形式一开始出现在过时的Java Beans的规范里，它组成了一些早期可重用组件框架的基础。有一些现代工具也依赖Beans的命名规范，你可以在需要和这些工具结合的代码中使用这种形式。当类中针对同一个属性既有setter也有getter的时候，也强烈建议遵循这种命名规范。在这种情况下，这两个方法被命名为getAttribute和setAttribute。
 
-> A few method names deserve special mention. Instance methods that convert the type of an object, returning an independent object of a different type, are often called to*Type*, for example, toString or toArray. Methods that return a *view* (Item 6) whose type differs from that of the receiving object are often called as*Type*, for example, asList. Methods that return a primitive with the same value as the object on which they’re invoked are often called *type*Value, for example, intValue. Common names for static factories include from, of, valueOf, instance, getInstance, newInstance, get*Type*, and new*Type* (Item 1, page 9).
+> A few method names deserve special mention. Instance methods that convert the type of an object, returning an independent object of a different type, are often called to_Type_, for example, toString or toArray. Methods that return a _view_ (Item 6) whose type differs from that of the receiving object are often called as_Type_, for example, asList. Methods that return a primitive with the same value as the object on which they’re invoked are often called _type_Value, for example, intValue. Common names for static factories include from, of, valueOf, instance, getInstance, newInstance, get_Type_, and new_Type_ (Item 1, page 9).
 
-一些方法的名字需要特殊的关注。转换对象的类型，返回一个独立的不同类型对象的实例方法，通常命名为toType，比如toString，toArray。返回一个和传入对象不同类型的试图的方法，通常命名为asType，比如，asList。返回一个对象的值相等的基本类型的方法，通常命名为typeValue，比如intValue。静态工厂的常见的命名有 from, of, valueOf, instance, getInstance, newInstance, get*Type*, 和 new*Type* (Item 1).
+一些方法的名字需要特殊的关注。转换对象的类型，返回一个独立的不同类型对象的实例方法，通常命名为toType，比如toString，toArray。返回一个和传入对象不同类型的试图的方法，通常命名为asType，比如，asList。返回一个对象的值相等的基本类型的方法，通常命名为typeValue，比如intValue。静态工厂的常见的命名有 from, of, valueOf, instance, getInstance, newInstance, get_Type_, 和 new_Type_ (Item 1).
 
 > Grammatical conventions for field names are less well established and less important than those for class, interface, and method names because well- designed APIs contain few if any exposed fields. Fields of type boolean are often named like boolean accessor methods with the initial is omitted, for example, initialized, composite. Fields of other types are usually named with nouns or noun phrases, such as height, digits, or bodyStyle. Grammatical conventions for local variables are similar to those for fields but even weaker.
 
 相对于类，接口和方法的名字，域的命名语法规范并没有很好地建立起来，也不那么重要，因为一个设计良好的API中包含的暴露的域很少。boolean类型的域命名和boolean访问方法很像，省略了前面的is，比如initialized, composite。其他类型的域通常是使用名词或者名词短语进行命名的，比如height, digits, or bodyStyle。本地变量的语法命名规范和域相似，但是要更弱一些。
 
-> To summarize, internalize the standard naming conventions and learn to use them as second nature. The typographical conventions are straightforward and largely unambiguous; the grammatical conventions are more complex and looser. To quote from *The Java Language Specification* [JLS, 6.1], “These conventions should not be followed slavishly if long-held conventional usage dictates other- wise.” Use common sense.
+> To summarize, internalize the standard naming conventions and learn to use them as second nature. The typographical conventions are straightforward and largely unambiguous; the grammatical conventions are more complex and looser. To quote from _The Java Language Specification_ \[JLS, 6.1], “These conventions should not be followed slavishly if long-held conventional usage dictates other- wise.” Use common sense.
 
-总结一下，把这些标准的命名规范当做是一种内在机制，并且当做第二特性还学习使用它们。字面规范是直接且明确的；而语法规范要更复杂和宽松一些。引用*The Java Language Specification* [JLS, 6.1]里的一句话，”当长期养成的使用习惯和这些相悖的时候，请不要盲目地遵守这些规范。“应该使用大家公认的。
+总结一下，把这些标准的命名规范当做是一种内在机制，并且当做第二特性还学习使用它们。字面规范是直接且明确的；而语法规范要更复杂和宽松一些。引用_The Java Language Specification_ \[JLS, 6.1]里的一句话，”当长期养成的使用习惯和这些相悖的时候，请不要盲目地遵守这些规范。“应该使用大家公认的。

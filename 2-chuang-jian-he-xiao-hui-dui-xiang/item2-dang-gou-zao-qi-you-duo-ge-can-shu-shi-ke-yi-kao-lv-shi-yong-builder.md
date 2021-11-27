@@ -1,4 +1,6 @@
-### Item2 当构造器有多个参数时，可以考虑使用Builder
+# Item2 当构造器有多个参数时，可以考虑使用Builder
+
+#### Item2 当构造器有多个参数时，可以考虑使用Builder
 
 > Static factories and constructors share a limitation: they do not scale well to large numbers of optional parameters. Consider the case of a class representing the Nutrition Facts label that appears on packaged foods. These labels have a few required fields—serving size, servings per container, and calories per serving—and more than twenty optional fields—total fat, saturated fat, trans fat, cholesterol, sodium, and so on. Most products have nonzero values for only a few of these optional fields.
 
@@ -48,8 +50,6 @@ public class NutritionFacts {
 ```java
 NutritionFacts cocaCola = new NutritionFacts(240,8,100,0,35,27)
 ```
-
-
 
 > Typically this constructor invocation will require many parameters that you don’t want to set, but you’re forced to pass a value for them anyway. In this case, we passed a value of 0 for fat. With “only” six parameters this may not seem so bad, but it quickly gets out of hand as the number of parameters increases
 >
@@ -110,7 +110,7 @@ cocaCola.setSodium(35);
 cocaCola.setCarbohydrate(27);
 ```
 
-> Unfortunately, the JavaBeans pattern has serious disadvantages of its own. Because construction is split across multiple calls, **a JavaBean may be in an inconsistent state partway through its construction.**The class does not have the option of enforcing consistency merely by checking the validity of the constructor parameters. Attempting to use an object when it’s in an inconsistent state may cause failures that are far removed from the code containing the bug and hence difficult to debug. A related disadvantage is that **the JavaBeans pattern precludes the possibility of making a class immutable**(Item 17) and requires added effort on the part of the programmer to ensure thread safety.
+> Unfortunately, the JavaBeans pattern has serious disadvantages of its own. Because construction is split across multiple calls, \*\*a JavaBean may be in an inconsistent state partway through its construction.\*\*The class does not have the option of enforcing consistency merely by checking the validity of the constructor parameters. Attempting to use an object when it’s in an inconsistent state may cause failures that are far removed from the code containing the bug and hence difficult to debug. A related disadvantage is that **the JavaBeans pattern precludes the possibility of making a class immutable**(Item 17) and requires added effort on the part of the programmer to ensure thread safety.
 >
 > It is possible to reduce these disadvantages by manually “freezing” the object when its construction is complete and not allowing it to be used until frozen, but this variant is unwieldy and rarely used in practice. Moreover, it can cause errors at runtime because the compiler cannot ensure that the programmer calls the freeze method on an object before using it.
 
@@ -118,7 +118,7 @@ cocaCola.setCarbohydrate(27);
 
 为了解决不一致的问题，可以在对象构造完成之后手动将对象冻结，并且只允许使用冻结后的对象。但是这种方式很不灵活，在实际中，也很少使用。除此之外，这种方式在运行时也很容易出现问题，因为编译器无法保证程序员在使用一个对象之前一定会调用冻结方法。
 
-> Luckily, there is a third alternative that combines the safety of the telescoping constructor pattern with the readability of the JavaBeans pattern. It is a form of the _Builder _pattern [Gamma95]. 
+> Luckily, there is a third alternative that combines the safety of the telescoping constructor pattern with the readability of the JavaBeans pattern. It is a form of the \_Builder \_pattern \[Gamma95].
 >
 > Instead of making the desired object directly, the client calls a constructor (or static factory) with all of the required parameters and gets a builder object. Then the client calls setter-like methods on the builder object to set each optional parameter of interest. Finally, the client calls a parameterless build method to generate the object, which is typically immutable. The builder is typically a static member class (Item 24) of the class it builds. Here’s how it looks in practice:
 
@@ -174,7 +174,7 @@ public class NutritionFacts {
 }
 ```
 
-> The *NutritionFacts* class is immutable, and all parameter default values are in one place. The builder’s setter methods return the builder itself so that invocations can be chained, resulting in a fluent API. Here’s how the client code looks:
+> The _NutritionFacts_ class is immutable, and all parameter default values are in one place. The builder’s setter methods return the builder itself so that invocations can be chained, resulting in a fluent API. Here’s how the client code looks:
 
 值得注意的是，NutritionFacts类是不可变的额，所有的参数默认值都放在一个地方。builder的setter方法返回值是builder本身，这样方便把所有的setter方法的调用连起来，写成流式的api形式，如下：
 
@@ -184,15 +184,15 @@ NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8).calories(100).sodiu
 
 > This client code is easy to write and, more importantly, easy to read. **The Builder pattern simulates named optional parameters as found in Python and Scala.**
 >
-> Validity checks were omitted for brevity. To detect invalid parameters as soon as possible, check parameter validity in the builder’s constructor and methods. Check invariants involving multiple parameters in the constructor invoked by the build method. To ensure these invariants against attack, do the checks on object fields after copying parameters from the builder (Item 50). If a check fails, throw an *IllegalArgumentException* (Item72) whose detail message indicates which parameters are invalid (Item 75).
+> Validity checks were omitted for brevity. To detect invalid parameters as soon as possible, check parameter validity in the builder’s constructor and methods. Check invariants involving multiple parameters in the constructor invoked by the build method. To ensure these invariants against attack, do the checks on object fields after copying parameters from the builder (Item 50). If a check fails, throw an _IllegalArgumentException_ (Item72) whose detail message indicates which parameters are invalid (Item 75).
 >
 > **The Builder pattern is well suited to class hierarchies.** Use a parallel hierarchy of builders, each nested in the corresponding class. Abstract classes have abstract builders; concrete classes have concrete builders. For example, consider an abstract class at the root of a hierarchy representing various kinds of pizza:
 
 从上面的例子可以看出，客户端代码很容易写，也很容易读。Builder模式模仿了Python和Scala中的具名的可选参数。
 
-为了简洁起见，例子中省略了有效性检查。要想尽快的检查出无效的参数，可以在builder的构造器方法和setter方法里进行参数的有效性检测。为了避免这些不可变量被攻击，在从builder里复制参数的时候应该进行检测（Item50)，如果检测到异常，抛出一个*IllegalArgumentException*（Item72）异常，在其详细信息里说明那个参数异常（Item 75）。
+为了简洁起见，例子中省略了有效性检查。要想尽快的检查出无效的参数，可以在builder的构造器方法和setter方法里进行参数的有效性检测。为了避免这些不可变量被攻击，在从builder里复制参数的时候应该进行检测（Item50)，如果检测到异常，抛出一个_IllegalArgumentException_（Item72）异常，在其详细信息里说明那个参数异常（Item 75）。
 
-**Builder模式也很适合类的层级结构。**对于多个平行类，可以平行的使用各个类对应的builder。抽象类有抽象的builder，非抽象类有非抽象的builder。比如，层级结构的一个底层抽象类如下，用于展示不同种类的pizza。
+\*\*Builder模式也很适合类的层级结构。\*\*对于多个平行类，可以平行的使用各个类对应的builder。抽象类有抽象的builder，非抽象类有非抽象的builder。比如，层级结构的一个底层抽象类如下，用于展示不同种类的pizza。
 
 ```java
 // Builder pattern for class hierarchies
@@ -218,7 +218,7 @@ public abstract class Pizza {
 }
 ```
 
-> Note that *Pizza.Builder* is a generic type with a recursive type parameter (Item 30). This, along with the abstract *self* method, allows method chaining to work properly in subclasses, without the need for casts. This work around for the fact that Java lacks a self type is known as the simulated self-type idiom. Here are two concrete subclasses of Pizza, one of which represents a standard New-York-style pizza, the other a calzone. The former has a required size parameter, while the latter lets you specify whether sauce should be inside or out:
+> Note that _Pizza.Builder_ is a generic type with a recursive type parameter (Item 30). This, along with the abstract _self_ method, allows method chaining to work properly in subclasses, without the need for casts. This work around for the fact that Java lacks a self type is known as the simulated self-type idiom. Here are two concrete subclasses of Pizza, one of which represents a standard New-York-style pizza, the other a calzone. The former has a required size parameter, while the latter lets you specify whether sauce should be inside or out:
 
 代码中需要注意的是，Pizza.Builder 类是一个带有递归类型参数的泛型。泛型和self方法一起使得方法链在子类中也能很的运行，也需要进行类型转换。这就解决了Java缺少self类型这一事实，也是模拟self类型的一种习惯用法。下面是两个具体的pizza的子类：一个是标准纽约风味的pizza，需要有一个表示大小的参数size；另一个是半圆形pizza，需要指定酱汁是内置还是外置。
 
@@ -275,9 +275,9 @@ public class Calzone extends Pizza {
 }
 ```
 
-> Note that the build method in each subclass’s builder is declared to return the correct subclass: the *build* method of *NyPizza.Builder* returns *NyPizza*, while the one in *Calzone.Builder* returns *Calzone*. This technique, where in a subclass method is declared to return a subtype of the return type declared in the super-class, is known as *covariant return typing*. It allows clients to use these builders without the need for casting. 
+> Note that the build method in each subclass’s builder is declared to return the correct subclass: the _build_ method of _NyPizza.Builder_ returns _NyPizza_, while the one in _Calzone.Builder_ returns _Calzone_. This technique, where in a subclass method is declared to return a subtype of the return type declared in the super-class, is known as _covariant return typing_. It allows clients to use these builders without the need for casting.
 >
-> The client code for these “hierarchical builders” is essentially identical to the code for the simple *NutritionFacts* builder. The example client code shown next assumes static imports on enum constants for brevity:
+> The client code for these “hierarchical builders” is essentially identical to the code for the simple _NutritionFacts_ builder. The example client code shown next assumes static imports on enum constants for brevity:
 
 代码中需要注意的是，每一个子类builder里的build方法的返回类型都是对应的子类类型，比如NyPizza.Builder里的build方法返回类型是NyPizza，而Calzone.Builder里的build方法返回的则是Calzone。我们将这种子类方法的返回类型 声明为 父类方法返回类型的子类 的技术称为协变返回类型(covariant return type)。基于这种技术，客户端在使用这些builder的时候就不需要进行类型转换了。
 
@@ -288,7 +288,7 @@ NyPizza pizza = new NyPizza.Builder(SMALL).addTopping(SAUSAGE).addTopping(ONION)
 Calzone calzone = new Calzone.Builder().addTopping(HAM).sauceInside().build();
 ```
 
-> A minor advantage of builders over constructors is that builders can have multiple varargs parameters because each parameter is specified in its own method. Alternatively, builders can aggregate the parameters passed into multiple calls to a method into a single field, as demonstrated in the *addTopping* method earlier.
+> A minor advantage of builders over constructors is that builders can have multiple varargs parameters because each parameter is specified in its own method. Alternatively, builders can aggregate the parameters passed into multiple calls to a method into a single field, as demonstrated in the _addTopping_ method earlier.
 >
 > The Builder pattern is quite flexible. A single builder can be used repeatedly to build multiple objects. The parameters of the builder can be tweaked between invocations of the build method to vary the objects that are created. A builder can fill in some fields automatically upon object creation, such as a serial number that increases each time an object is created.
 
@@ -302,6 +302,6 @@ Builder模式非常灵活，一个builder对象可以反复使用创建多个对
 
 > In summary, **the Builder pattern is a good choice when designing classes whose constructors or static factories would have more than a handful of parameters**, especially if many of the parameters are optional or of identical type. Client code is much easier to read and write with builders than with telescoping constructors, and builders are much safer than JavaBeans.
 
-总的来说，**在设计一个类的时候，当该类的构造器或者静态工厂方法有一定数量的参数时，Builder模式是一个不错的选择。**尤其是当一些参数是可选的，或者一些参数具有相同的类型的时候。Builder模式相对于伸缩构造器模式而言，客户端代码更容易编写和阅读；相对于JavaBeans模式而言，更安全。
+总的来说，\*\*在设计一个类的时候，当该类的构造器或者静态工厂方法有一定数量的参数时，Builder模式是一个不错的选择。\*\*尤其是当一些参数是可选的，或者一些参数具有相同的类型的时候。Builder模式相对于伸缩构造器模式而言，客户端代码更容易编写和阅读；相对于JavaBeans模式而言，更安全。
 
-### 
+####

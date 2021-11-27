@@ -1,8 +1,8 @@
-### Item53 谨慎使用可变参数
+# Item53 谨慎使用可变参数
 
-> Varargs methods, formally known as *variable arity* methods [JLS, 8.4.1], accept zero or more arguments of a specified type. The varargs facility works by first creating an array whose size is the number of arguments passed at the call site, then putting the argument values into the array, and finally passing the array to the method.
+> Varargs methods, formally known as _variable arity_ methods \[JLS, 8.4.1], accept zero or more arguments of a specified type. The varargs facility works by first creating an array whose size is the number of arguments passed at the call site, then putting the argument values into the array, and finally passing the array to the method.
 
-可变参数方法，一般称作 *variable arity*方法[JLS, 8.4.1]。接受0个或者多个特定类型的参数。可变参数机制首先会创建一个大小是传入参数个数的数组，然后把这些参数值放在数组中，最后把这个数组传到方法里。
+可变参数方法，一般称作 _variable arity_方法\[JLS, 8.4.1]。接受0个或者多个特定类型的参数。可变参数机制首先会创建一个大小是传入参数个数的数组，然后把这些参数值放在数组中，最后把这个数组传到方法里。
 
 > For example, here is a varargs method that takes a sequence of int arguments and returns their sum. As you would expect, the value of sum(1, 2, 3) is 6, and the value of sum() is 0:
 
@@ -18,7 +18,7 @@
    }
 ```
 
-> Sometimes it’s appropriate to write a method that requires *one* or more arguments of some type, rather than *zero* or more. For example, suppose you want to write a function that computes the minimum of its arguments. This function is not well defined if the client passes no arguments. You could check the array length at runtime:
+> Sometimes it’s appropriate to write a method that requires _one_ or more arguments of some type, rather than _zero_ or more. For example, suppose you want to write a function that computes the minimum of its arguments. This function is not well defined if the client passes no arguments. You could check the array length at runtime:
 
 有的时候，相比0个或者多个，需要一个或者多个特定类型的参数的方法，可能更合适一些。比如，你想写一个函数，计算传入参数的大小，当客户端没有传入参数的时候，这个函数不是很好定义，在运行时，你需要检查数组的长度。代码如下：
 
@@ -35,9 +35,9 @@
    }
 ```
 
-> This solution has several problems. The most serious is that if the client invokes this method with no arguments, it fails at runtime rather than compile time. Another problem is that it is ugly. You have to include an explicit validity check on args, and you can’t use a for-each loop unless you initialize min to Integer.MAX_VALUE, which is also ugly.
+> This solution has several problems. The most serious is that if the client invokes this method with no arguments, it fails at runtime rather than compile time. Another problem is that it is ugly. You have to include an explicit validity check on args, and you can’t use a for-each loop unless you initialize min to Integer.MAX\_VALUE, which is also ugly.
 
-这个解决方法有几个问题。最严重的时候，如果这个客户端调用这个方法时，没有提供参数，它就会再运行时失败，而不是编译时失败。另一个问题就是有点丑。首先必须要对参数进行一个显式的有效性检查，如果你不使用Integer.MAX_VALUE来初始化min的话，你就不能使用for-each循环，且Integer.MAX_VALUE也有点丑。
+这个解决方法有几个问题。最严重的时候，如果这个客户端调用这个方法时，没有提供参数，它就会再运行时失败，而不是编译时失败。另一个问题就是有点丑。首先必须要对参数进行一个显式的有效性检查，如果你不使用Integer.MAX\_VALUE来初始化min的话，你就不能使用for-each循环，且Integer.MAX\_VALUE也有点丑。
 
 > Luckily there’s a much better way to achieve the desired effect. Declare the method to take two parameters, one normal parameter of the specified type and one varargs parameter of this type. This solution corrects all the deficiencies of the previous one:
 
