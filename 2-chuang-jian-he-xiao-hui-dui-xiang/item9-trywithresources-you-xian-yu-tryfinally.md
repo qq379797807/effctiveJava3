@@ -90,7 +90,7 @@ static void copy(String src, String dst) throws IOException {
 >
 > You can put catch clauses on try-with-resources statements, just as you can on regular try-finally statements. This allows you to handle exceptions without sullying your code with another layer of nesting. As a slightly contrived example, here’s a version our firstLineOfFile method that does not throw exceptions, but takes a default value to return if it can’t open the file or read from it:
 
-相对于原始版本，使用try-with-resources的版本不仅仅简洁易懂，出了问题还更容易诊断。比如firstLineOfFile方法，如果在readLine方法和（不可见的）close方法中都抛出了异常，那么close中的异常就会被禁止，保留readLine中的异常。事实上，为了让程序员可以看见真正想看的异常，有很多的异常都被静止了。这些被禁止了的异常不是简单的被抛弃了，它们会被打印在栈轨迹上，并且注明是被禁止了的异常。还可以通过编程调用getSuppressed方法来调用它们，这个方法在java7里被添加到了Throwable里。
+相对于原始版本，使用try-with-resources的版本不仅仅简洁易懂，出了问题还更容易诊断。比如firstLineOfFile方法，如果在readLine方法和（不可见的）close方法中都抛出了异常，那么close中的异常就会被禁止，保留readLine中的异常。事实上，为了让程序员可以看见真正想看的异常，有很多的异常都被禁止了。这些被禁止了的异常不是简单的被抛弃了，它们会被打印在栈轨迹上，并且注明是被禁止了的异常。还可以通过编程调用getSuppressed方法来调用它们，这个方法在java7里被添加到了Throwable里。
 
 在try-with-resources里，也可以像在try-finally语句里一样使用catch字句。这使得你可以处理一些异常，还不用再套一层代码。比如下面这个花了一些心思的例子，这是firstLineOfFile的一个版本，当无法打开或者读取文件的时候，这个方法也不会抛出异常，只是返回一个默认的值。
 
