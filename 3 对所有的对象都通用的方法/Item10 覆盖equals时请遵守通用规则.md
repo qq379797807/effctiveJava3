@@ -12,12 +12,12 @@
 
 **每个实例本质上都是唯一的类**。对于那些代表活动实体而不是值的类（比如 Thread）正是如此。Object提供的equals实现对于这些类来说，就是正确的行为。
 
-**并不需要提供”逻辑相等“的测试的类”**。比如java.util.regex.Pattern可以覆盖equals方法来检测两个Pattern实例是否代表同一个正则表达式，但是设计者人为客户端并不需要或者说不想要这样的功能。在这种情况下，直接继承Object类的equals实现是最理想的。
+**并不需要提供”逻辑相等“的测试的类”**。比如java.util.regex.Pattern可以覆盖equals方法来检测两个Pattern实例是否代表同一个正则表达式，但是设计者认为客户端并不需要或者说不想要这样的功能。在这种情况下，直接继承Object类的equals实现是最理想的。
 
 > * **A super class has already over ridden equals,and the super class behavior is appropriate for this class**. For example, most Set implementations inherit their equals implementation from AbstractSet, List implementations from AbstractList, and Map implementations from AbstractMap.
 > * **The classis private or package-private,and you are certain that its equals method will never be invoked.** If you are extremely risk-averse, you can override the equals method to ensure that it isn’t invoked accidentally.
 
-**当其父类已经覆盖了equals方法，并且父类的行为也适用的类**。比如，大部分的Set实现类都从AbstractSet那里继承了equals实现，List实现类从AbstractList继承equals实现，Map实现类从AbstractMap继承equals实现。
+**当其父类已经覆盖了equals方法，并且父类的行为也适用于当前子类**。比如，大部分的Set实现类都从AbstractSet那里继承了equals实现，List实现类从AbstractList继承equals实现，Map实现类从AbstractMap继承equals实现。
 
 **私有或者包级私有，你确定它的equals方法不会被调用的类**。如果你非常不想貌相，你可以像下面这样覆盖equals方法，以防止被意外的调用。
 

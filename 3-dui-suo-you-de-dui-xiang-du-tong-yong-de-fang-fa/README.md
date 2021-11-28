@@ -4,6 +4,6 @@
 >
 > This chapter tells you when and how to override the nonfinal Object methods. The finalize method is omitted from this chapter because it was discussed in Item 8. While not an Object method, Comparable.compareTo is discussed in this chapter because it has a similar character.
 
-虽然Object是一个具体的类，但是这个类就是设计来扩展的。为了更好的被覆盖（overridden），它的所有非final的方法（equals, hashCode, toString, clone, 和 finalize）都有明确的通用约定（general contract）。任何类要覆盖这些方法的时候，都有责任遵守这些通用约定。否则这些类将无法和基于这个约定时限的类（不如HashMap和HashSet）一起正常的运作。
+虽然Object是一个具体的类，但是这个类就是设计来扩展的。为了更好的被覆盖（overridden），它的所有非final的方法（equals, hashCode, toString, clone, 和 finalize）都有明确的通用约定（general contract）。任何类要覆盖这些方法的时候，都有责任遵守这些通用约定。否则这些类将无法和基于这个约定的类（不如HashMap和HashSet）一起正常的运作。
 
 本章告诉你什么时候以及如何去覆盖Object的非final方法。其中finalize方法并不在本章中讨论，因为Item8里面已经讨论过了。虽然Comparable.compareTo不是Object的方法，但由于它有类似的特征，所以本章中也对它进行了讨论。
