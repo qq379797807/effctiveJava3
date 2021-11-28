@@ -4,11 +4,11 @@
 
 > The single most important factor that distinguishes a well-designed component from a poorly designed one is the degree to which the component hides its internal data and other implementation details from other components. A well-designed component hides all its implementation details, cleanly separating its API from its implementation. Components then communicate only through their APIs and are oblivious to each others’ inner workings. This concept, known as _information hiding_ or _encapsulation_, is a fundamental tenet of software design \[Parnas72].
 
-区分一个组件设计的好坏，唯一重要的因素是这个组件对于其他组件而言，是否很好的影藏了内部的数据和实现细节。一个设计优秀的组件隐藏了所有的实现细节，将API和实现很好的分离开来。组件之间只是通过API进行通信，而对其他组件的内部工作情况完全不知情。这个概念被称为“信息隐藏（information hiding）”或者“封装（encapsulation）”，是软件设计的基本原则之一。
+区分一个组件设计的好坏唯一要点是，这个组件对于其他组件而言，是否很好的影藏了内部的数据和实现细节。一个设计优秀的组件隐藏了所有的实现细节，将API和实现很好的分离开来。组件之间只是通过API进行通信，而对其他组件的内部工作情况完全不知情。这个概念被称为“信息隐藏（information hiding）”或者“封装（encapsulation）”，是软件设计的基本原则之一。
 
 > Information hiding is important for many reasons, most of which stem from the fact that it _decouples_ the components that comprise a system, allowing them to be developed, tested, optimized, used, understood, and modified in isolation. This speeds up system development because components can be developed in parallel. It eases the burden of maintenance because components can be understood more quickly and debugged or replaced with little fear of harming other components. While information hiding does not, in and of itself, cause good performance, it enables effective performance tuning: once a system is complete and profiling has determined which components are causing performance problems (Item 67), those components can be optimized without affecting the correctness of others. Information hiding increases software reuse because components that aren’t tightly coupled often prove useful in other contexts besides the ones for which they were developed. Finally, information hiding decreases the risk in building large systems because individual components may prove successful even if the system does not.
 
-信息隐藏之所以很重要有很多原因，其中大多是因为它可以让组成一个系统的各个组件之间解耦（decouples），允许他们可以独立的开发、测试、优化、使用、理解和修改。这些可以加快系统的发展，因为各个组件可以并行开发。也使得维护变得容易，因为各个组件可以很容易地理解，在调试的时候，不用担心影响到其他的组件。虽然信息隐藏不管是对内还是对外都不会带来性能优化，但是它可以使性能调节更容易。一旦一个系统完成且通过分析得知哪个组件有性能问题（Item67)，这些组件就可以在不影响其他组件的情况下进行优化。信息隐藏也可以增强软件的重用性，因为那些没要紧密相连的组件，在不是其开发环境的其他环境中也很有用。最后，信息隐藏在构建大型系统的时候可以降低风险，因为即使是系统不能正常工作的时候，这些组件也还是可用的。
+信息隐藏之所以很重要有很多原因，其中大多是因为它可以让组成一个系统的各个组件之间解耦（decouples），允许他们可以独立的开发、测试、优化、使用、理解和修改。这些可以加快系统的发展，因为各个组件可以并行开发。也使得维护变得容易，因为各个组件可以很容易地理解，在调试的时候，不用担心影响到其他的组件。虽然信息隐藏不管是对内还是对外都不会带来性能优化，但是它可以使性能调节更容易。一旦一个系统完成且通过分析得知哪个组件有性能问题（Item67)，这些组件就可以在不影响其他组件的情况下进行优化。信息隐藏也可以增强软件的重用性，因为那些没有紧密相连的组件，在为其它业务提供了有用的功能。最后，隐藏信息在构建大型系统的时候可以降低风险，因为即使是系统不能正常工作的时候，这些组件也还是可用的。
 
 > Java has many facilities to aid in information hiding. The _access control_ mechanism \[JLS, 6.6] specifies the _accessibility_ of classes, interfaces, and members. The accessibility of an entity is determined by the location of its declaration and by which, if any, of the access modifiers (private, protected, and public) is present on the declaration. Proper use of these modifiers is essential to information hiding.
 >
@@ -42,7 +42,7 @@ Java中提供了很多机制可以帮助信息隐藏。访问控制机制明确�
 
 > After carefully designing your class’s public API, your reflex should be to make all other members private. Only if another class in the same package really needs to access a member should you remove the private modifier, making the member package-private. If you find yourself doing this often, you should reexamine the design of your system to see if another decomposition might yield classes that are better decoupled from one another. That said, both private and package-private members are part of a class’s implementation and do not normally impact its exported API. These fields can, however, “leak” into the exported API if the class implements Serializable (Items 86 and 87).
 
-在仔细设计了类的公有api以后，你应该本能地把所有的其他成员都设为私有的。只有当同一个包里的其他类确实需要访问这个类的成员的时候，你猜应该删除private修饰符，使这个成员变成包级私有的。如果你发现你总是在做这样的事情，你就需要反思一下你的系统的设计，看看是不是换另一种分解方案获得的类们，他们之间的耦合度会不会低一些。也就是说，私有和包级私有的成员都属于类的实现中的一部分不会影响到它的导出的API。但是，当这个类实现了Serializable接口时（Item86和Item87），这些域可能会被泄露到导出的API里去。
+在仔细设计了类的公有api以后，你应该本能地把所有的其他成员都设为私有的。只有当同一个包里的其他类确实需要访问这个类的成员的时候，你才应该删除private修饰符，使这个成员变成包级私有的。如果你发现你总是在做这样的事情，你就需要反思一下你的系统的设计，看看是不是换另一种分解方案获得的类们，他们之间的耦合度会不会低一些。也就是说，私有和包级私有的成员都属于类的实现中的一部分不会影响到它的导出的API。但是，当这个类实现了Serializable接口时（Item86和Item87），这些域可能会被泄露到导出的API里去。
 
 > For members of public classes, a huge increase in accessibility occurs when the access level goes from package-private to protected. A protected member is part of the class’s exported API and must be supported forever. Also, a protected member of an exported class represents a public commitment to an implementation detail (Item 19). The need for protected members should be relatively rare.
 >
@@ -50,7 +50,7 @@ Java中提供了很多机制可以帮助信息隐藏。访问控制机制明确�
 
 对于公有类的成员而言，访问级别从包级私有到被保护的，这个成员的可访问性会有一个巨大的提升。一个被保护的成员也是这个类的导出API中的一部分，必须被永久的支持。同样地，一个导出类的被保护的成员也代表这个类对实现细节的公开承诺。需要使用被保护的成员的情况很少见。
 
-有一个关键的规则限制了降低方法的可见性的能力：如果一个方法是覆盖的父类的方法，那么这个方法在子类中的可见性就不能比父类中低\[JLS, 8.4.8.3]，这对于确保在父类实例可用的任何地方，都可以使用其子类的实例，很重要（里氏替换原则，详见Item10）。如果你违反了这个负责，在你试图辨析子类的时候，编译器就会生成一个错误信息。这条规则的一个特殊的情况是，当一个类实现一个接口时，这个类中所有来自接口的方法都必须要声明为公有的。
+有一个关键的规则限制了降低方法的可见性的能力：如果一个方法是覆盖的父类的方法，那么这个方法在子类中的可见性就不能比父类中低\[JLS, 8.4.8.3]，这对于确保在父类实例可用的任何地方，都可以使用其子类的实例，很重要（里氏替换原则，详见Item10）。如果你违反了这个规则，在你试图辨析子类的时候，编译器就会生成一个错误信息。这条规则的一个特殊的情况是，当一个类实现一个接口时，这个类中所有来自接口的方法都必须要声明为公有的。
 
 > To facilitate testing your code, you may be tempted to make a class, interface, or member more accessible than otherwise necessary. This is fine up to a point. It is acceptable to make a private member of a public class package-private in order to test it, but it is not acceptable to raise the accessibility any higher. In other words, it is not acceptable to make a class, interface, or member a part of a package’s exported API to facilitate testing. Luckily, it isn’t necessary either because tests can be made to run as part of the package being tested, thus gaining access to its package-private elements.
 
@@ -58,11 +58,11 @@ Java中提供了很多机制可以帮助信息隐藏。访问控制机制明确�
 
 > **Instance fields of public classes should rarely be public** (Item 16). If an instance field is nonfinal or is a reference to a mutable object, then by making it public, you give up the ability to limit the values that can be stored in the field. This means you give up the ability to enforce invariants involving the field. Also, you give up the ability to take any action when the field is modified, so **classes with public mutable fields are not generally thread-safe.** Even if a field is final and refers to an immutable object, by making it public you give up the flexibility to switch to a new internal data representation in which the field does not exist.
 
-公有类的实体域（非静态域）一般情况都不应该是公有的（Item16）。如果一个实体域是非final的，或者是一个可变对象的final引用，如果设置成公有的话，就相当于放弃了对保存在这个域的值的限制权力，也意味着你放弃了强制要求这个域不可变的能力，也放弃了当这个域发生改变时，采取对应措施的能力。因此包含公有可变域的类一般来说都不是线程安全的。即使这个域是指向不可变对象的final域，如果设置成public的话，也相当于放弃了“切换到另一种新的内部数据表示”的灵活性。
+公有类的实体域（非静态域）一般情况都不应该是公有的（Item16）。如果一个实体域是非final的，或者是一个可变对象的final引用，<mark style="background-color:orange;">如果设置成公有的话，就相当于放弃了对保存在这个域的值的限制权力</mark>，也意味着你放弃了强制要求这个域不可变的能力，也放弃了当这个域发生改变时，采取对应措施的能力。因此<mark style="background-color:red;">包含公有可变域的类一般来说都不是线程安全的</mark>。即使这个域是指向不可变对象的final域，如果设置成public的话，也相当于放弃了“切换到另一种新的内部数据表示”的灵活性。
 
 > The same advice applies to static fields, with one exception. You can expose constants via public static final fields, assuming the constants form an integral part of the abstraction provided by the class. By convention, such fields have names consisting of capital letters, with words separated by underscores (Item 68). It is critical that these fields contain either primitive values or references to immutable objects (Item 17). a field containing a reference to a mutable object has all the disadvantages of a nonfinal field. While the reference cannot be modified, the referenced object can be modified—with disastrous results.
 
-这种建议也适用于静态域，但有一个例外。假设一些常量构成了类提供的抽象中的必不可少的一部分，就可以通过公有静态域来暴露这些常量。通常情况下，这些域都使用大写字母里命名，使用下划线来进行分割（Item68)。很重要的是，这种域包含的值应该是基本类型或者是不可变对象的引用。包含可变对象的应用的静态final域有所有非final域的缺点，因为即使这个引用无法修改，但是引用的对象可以被修改，会带来灾难性的后果。
+这种建议也适用于静态域，但有一个例外。假设一些常量构成了类提供的抽象中的必不可少的一部分，就可以通过公有静态域来暴露这些常量。通常情况下，这些域都使用大写字母里命名，使用下划线来进行分割（Item68)。很重要的是，这种域包含的值应该是基本类型或者是不可变对象的引用。可变对象静态final域具有非final域的所有缺点，因为即使这个引用无法修改，但是引用的对象可以被修改，会带来灾难性的后果。
 
 > Note that a nonzero-length array is always mutable, so **it is wrong for a class to have a public static final array field, or an accessor that returns such a field.** If a class has such a field or accessor, clients will be able to modify the contents of the array. This is a frequent source of security holes:
 
@@ -102,15 +102,15 @@ public static final Thing[] values() {
 >
 > Unlike the four main access levels, the two module-based levels are largely advisory. If you place a module’s JAR file on your application’s class path instead of its module path, the packages in the module revert to their non-modular behavior: all of the public and protected members of the packages’ public classes have their normal accessibility, regardless of whether the packages are exported by the module \[Reinhold, 1.2]. The one place where the newly introduced access levels are strictly enforced is the JDK itself: the unexported packages in the Java libraries are truly inaccessible outside of their modules.
 
-在Java9里，作为模块系统（module system）中的一部分，有两种新增的隐式访问级别。一个模块就是一组包，就像包就是一组类一样。一个模块可以显示地通过其模块声明（module declaration）中的导出声明（export declaration）导出它的一些包，模块声明一包都包含在一个名叫module-info.java的源文件里。那些没有被导出的包里的公有和受保护的成员在模块外是无法访问的，在模块内部，其访问不受影响。使用这种模块系统，允许你在一个模块内部的包之间共享类，而不把它们公开给全世界。因此，我们可以看做未导出的包中的公有类中的公有和受保护成员的可访问性提升成了两个隐式访问级别，作为正常的公有和受保护级别的模块内部的对等体（intramodular analogues）。这种类型的共享的需求比较少见，而且可以通过重新组合包中的类来解决。
+在Java9里，作为模块系统（module system）中的一部分，有两种新增的隐式访问级别。一个模块就是一组包，就像包就是一组类一样。一个模块可以显示地通过其模块声明（module declaration）中的导出声明（export declaration）导出它的一些包，模块声明一般都包含在一个名叫module-info.java的源文件里。那些没有被导出的包里的公有和受保护的成员在模块外是无法访问的，在模块内部，其访问不受影响。使用这种模块系统，允许你在一个模块内部的包之间共享类，而不把它们公开给全世界。因此，我们可以看做未导出的包中的公有类中的公有和受保护成员的可访问性提升成了两个隐式访问级别，作为正常的公有和受保护级别的模块内部的对等体（intramodular analogues）。这种类型的共享的需求比较少见，而且可以通过重新组合包中的类来解决。
 
-和其他的四种访问级别不同，这两种基于模块的访问级别只是建议性的。如果你把一个模块的JAR包放在了程序的类路径上，而不是模块路径上。在模块内的包的行为就会变回非模块行为，也就是，其包内的所有的共有类的公有和受保护的成员都会有正常的可访问性，不论这个包是都在模块中被导出。一个严格使用介绍的新的访问级别的地方就是JDK自己，在Java类库中，未导出的包在模块外部是绝对无法访问的。
+和其他的四种访问级别不同，这两种基于模块的访问级别只是建议性的。如果你把一个模块的JAR包放在了程序的类路径上，而不是模块路径上。在模块内的包的行为就会变回非模块行为，也就是，其包内的所有的共有类的公有和受保护的成员都会有正常的可访问性，不论这个包是否在模块中被导出。一个严格使用这种新访问级别的地方就是JDK自己，在Java类库中，未导出的包在模块外部是绝对无法访问的。
 
 > Not only is the access protection afforded by modules of limited utility to the typical Java programmer, and largely advisory in nature; in order to take advantage of it, you must group your packages into modules, make all of their dependencies explicit in module declarations, rearrange your source tree, and take special actions to accommodate any access to non-modularized packages from within your modules \[Reinhold, 3]. It is too early to say whether modules will achieve widespread use outside of the JDK itself. In the meantime, it seems best to avoid them unless you have a compelling need.
 >
 > To summarize, you should reduce accessibility of program elements as much as possible (within reason). After carefully designing a minimal public API, you should prevent any stray classes, interfaces, or members from becoming part of the API. With the exception of public static final fields, which serve as constants, public classes should have no public fields. Ensure that objects referenced by public static final fields are immutable.
 
-对于传统的程序员而言，不仅仅由受限工具的模块提供了访问性保护，而且这个本质上也只是建议性的。为了要利用这个优势，你必须将你的包组织成模块，在模块声明中明确指出他们之间的依赖，重新组织代码结构树。从模块内部采取一些特殊的措施来提供对那些非模块包的访问\[Reinhold, 3]。除了JDK自身以外，现在说模块会取得广泛应用还为时尚早。也就意味值，除非你确实需要以外，最好还是不要使用他们。
+对于传统的程序员而言，不仅仅由受限的工具模块提供了访问性保护，而且这个本质上也只是建议性的。为了要利用这个优势，你必须将你的包组织成模块，在模块声明中明确指出他们之间的依赖，重新组织代码结构树。从模块内部采取一些特殊的措施来提供对那些非模块包的访问\[Reinhold, 3]。除了JDK自身以外，现在说模块会取得广泛应用还为时尚早。也就意味值，除非你确实需要以外，最好还是不要使用他们。
 
 总结一下，你应该尽可能（合理）地减少程序成员的可访问性。在仔细设计了一个最小的公用api以外，应该避免其他的类、接口、成员变成API的一部分。除了保存常量的公有静态final域外，公有类不应该包含公有域。保证一个对象的公有静态常量的引用对象是不可变的。
 
