@@ -1,10 +1,6 @@
-## 9 通用编程
+# Item57 局部变量作用域最小化
 
-> **T**HIS chapter is devoted to the nuts and bolts of the language. It discusses local variables, control structures, libraries, data types, and two extralinguistic facilities: *reflection* and *native methods*. Finally, it discusses optimization and naming conventions.
-
-本章致力于讨论Java语言的细枝末节。讨论了本地变量，控制结构，类库，数据类型，以及两种语言外的机制：反射和本地方法。最后讨论了优化和命名习惯。
-
-### Item57 局部变量作用域最小化
+Item57 局部变量作用域最小化
 
 > This item is similar in nature to Item 15, “Minimize the accessibility of classes and members.” By minimizing the scope of local variables, you increase the readability and maintainability of your code and reduce the likelihood of error.
 
@@ -16,7 +12,7 @@
 
 > **The most powerful technique for minimizing the scope of a local variable is to declare it where it is first used.** If a variable is declared before it is used, it’s just clutter—one more thing to distract the reader who is trying to figure out what the program does. By the time the variable is used, the reader might not remember the variable’s type or initial value.
 
-**将局部变量作用域最小化的最有效的方法就是在第一次使用变量的地方，进行变量声明。**如果变量在使用之前声明，只会造成混乱——对于那些企图弄懂程序在干什么的读者来说，又多了一个需要分心的东西。等到用这个变量的时候，读者可能已经忘记了变量的类型和初始值了。
+\*\*将局部变量作用域最小化的最有效的方法就是在第一次使用变量的地方，进行变量声明。\*\*如果变量在使用之前声明，只会造成混乱——对于那些企图弄懂程序在干什么的读者来说，又多了一个需要分心的东西。等到用这个变量的时候，读者可能已经忘记了变量的类型和初始值了。
 
 > Declaring a local variable prematurely can cause its scope not only to begin too early but also to end too late. The scope of a local variable extends from the point where it is declared to the end of the enclosing block. If a variable is declared outside of the block in which it is used, it remains visible after the program exits that block. If a variable is used accidentally before or after its region of intended use, the consequences can be disastrous.
 
@@ -24,11 +20,11 @@
 
 > **Nearly every local variable declaration should contain an initializer.** If you don’t yet have enough information to initialize a variable sensibly, you should postpone the declaration until you do. One exception to this rule concerns try- catch statements. If a variable is initialized to an expression whose evaluation can throw a checked exception, the variable must be initialized inside a try block (unless the enclosing method can propagate the exception). If the value must be used outside of the try block, then it must be declared before the try block, where it cannot yet be “sensibly initialized.” For an example, see page 283.
 
-**几乎每一个变量的声明都应该包含初始化。**如果你还不能获得确定的信息来将这个变量初始化，那么就应该延迟声明直到你能初始化为止。这个规则有一个例外，是和try-catch语句有关。如果一个变量初始化的表达式会抛出受检异常，那么这个变量就必须在try块 里面进行初始化（除非外围方法可以直接传递异常）。如果这个值必须在try块的外部使用，那么这个变量就必须在try块之前声明，但是在这个时候，这个变量还不能被“有效地初始化”。可以参照Item65中的例子。
+\*\*几乎每一个变量的声明都应该包含初始化。\*\*如果你还不能获得确定的信息来将这个变量初始化，那么就应该延迟声明直到你能初始化为止。这个规则有一个例外，是和try-catch语句有关。如果一个变量初始化的表达式会抛出受检异常，那么这个变量就必须在try块 里面进行初始化（除非外围方法可以直接传递异常）。如果这个值必须在try块的外部使用，那么这个变量就必须在try块之前声明，但是在这个时候，这个变量还不能被“有效地初始化”。可以参照Item65中的例子。
 
-> Loops present a special opportunity to minimize the scope of variables. The for loop, in both its traditional and for-each forms, allows you to declare *loop variables*, limiting their scope to the exact region where they’re needed. (This region consists of the body of the loop and the code in parentheses between the for keyword and the body.) Therefore, **prefer** **for** **loops to** **while** **loops**, assuming the contents of the loop variable aren’t needed after the loop terminates.
+> Loops present a special opportunity to minimize the scope of variables. The for loop, in both its traditional and for-each forms, allows you to declare _loop variables_, limiting their scope to the exact region where they’re needed. (This region consists of the body of the loop and the code in parentheses between the for keyword and the body.) Therefore, **prefer** **for** **loops to** **while** **loops**, assuming the contents of the loop variable aren’t needed after the loop terminates.
 
-循环提供了一个特殊的机会来将变量的作用域最小化。在传统的和for-each形式的for循环里，都允许你声明循环变量，限制了变量的作用域就是他们真正需要的区域（这个区域包块循环体，和在for关键字和循环体之间圆括号里面的代码（*也就是循环的初始化，测试，更新部分*））。因此，当循环的变量在循环终止后不在需要的时候，**for循环优先于while循环**。
+循环提供了一个特殊的机会来将变量的作用域最小化。在传统的和for-each形式的for循环里，都允许你声明循环变量，限制了变量的作用域就是他们真正需要的区域（这个区域包块循环体，和在for关键字和循环体之间圆括号里面的代码（_也就是循环的初始化，测试，更新部分_））。因此，当循环的变量在循环终止后不在需要的时候，**for循环优先于while循环**。
 
 > For example, here is the preferred idiom for iterating over a collection (Item 58):
 
@@ -103,7 +99,7 @@ for (int i = 0, n = expensiveComputation(); i < n; i++) {
 }
 ```
 
-> The important thing to notice about this idiom is that it has *two* loop variables, i and n, both of which have exactly the right scope. The second variable, n, is used to store the limit of the first, thus avoiding the cost of a redundant computation in every iteration. As a rule, you should use this idiom if the loop test involves a method invocation that is guaranteed to return the same result on each iteration.
+> The important thing to notice about this idiom is that it has _two_ loop variables, i and n, both of which have exactly the right scope. The second variable, n, is used to store the limit of the first, thus avoiding the cost of a redundant computation in every iteration. As a rule, you should use this idiom if the loop test involves a method invocation that is guaranteed to return the same result on each iteration.
 
 其中有一个很重要的事情，这个例子有两个循环变量， i和n，这两个变量都有正确的作用域。第二个变量n用来保存第一个变量i的极限值，避免了在每次迭代中都进行多余的计算。通常来说，如果循环测试中包含了一个方法调用，并且这个方法调用在每次迭代中都会返回相同的值，那么就应该使用这种做法。
 

@@ -1,10 +1,6 @@
-## 10 异常
+# Item69 只针对异常的情况使用异常
 
-> **W**HEN used to best advantage, exceptions can improve a program’s readability, reliability, and maintainability. When used improperly, they can have the opposite effect. This chapter provides guidelines for using exceptions effectively.
-
-使用时充分发挥异常的优点的话，可以提高程序的可读性，可靠性和可维护性。当使用不当的时候，可能会造成相反的结果。本章提供了一些高校使用异常的指导原则。
-
-### Item69 只针对异常的情况使用异常
+Item69 只针对异常的情况使用异常
 
 > Someday, if you are unlucky, you may stumble across a piece of code that looks something like this:
 
@@ -33,13 +29,13 @@ for (Mountain m : range)
 
 那么，为什么还会有人用这种基于异常的循环，而不是被证明有效的方法呢？这是一种被误导了的做法，企图根据错误的依据来提高性能，其依据是这样的：因为VM在每次访问数组的时候都会检测数组的边界，因此他们认为普通的循环终止测试是多余的，应该避免。循环终止测试在for-each循环中被编译器隐藏了，但仍然确实存在。这个依据有三点错误如下：
 
-> - Because exceptions are designed for exceptional circumstances, there is little incentive for JVM implementors to make them as fast as explicit tests.
-> - Placing code inside a try-catch block inhibits certain optimizations that JVM implementations might otherwise perform.
-> - The standard idiom for looping through an array doesn’t necessarily result in redundant checks. Many JVM implementations optimize them away.
+> * Because exceptions are designed for exceptional circumstances, there is little incentive for JVM implementors to make them as fast as explicit tests.
+> * Placing code inside a try-catch block inhibits certain optimizations that JVM implementations might otherwise perform.
+> * The standard idiom for looping through an array doesn’t necessarily result in redundant checks. Many JVM implementations optimize them away.
 
-- 因为异常只是为异常的情况设计的，因此JVM实现者很难有心思把他们做得像显式的测试那么快。
-- 把这段代码放在一个try-catch块里，妨碍了JVM实现可能对其进行其他方面的优化。
-- 对数组进行标准的for循环遍历，并不一定会生成多余的检测，因为很多JVM实现会将它优化掉。
+* 因为异常只是为异常的情况设计的，因此JVM实现者很难有心思把他们做得像显式的测试那么快。
+* 把这段代码放在一个try-catch块里，妨碍了JVM实现可能对其进行其他方面的优化。
+* 对数组进行标准的for循环遍历，并不一定会生成多余的检测，因为很多JVM实现会将它优化掉。
 
 > In fact, the exception-based idiom is far slower than the standard one. On my machine, the exception-based idiom is about twice as slow as the standard one for arrays of one hundred elements.
 
@@ -51,11 +47,11 @@ for (Mountain m : range)
 
 > The moral of this story is simple: **Exceptions are, as their name implies, to be used only for exceptional conditions; they should never be used for ordinary control flow.** More generally, use standard, easily recognizable idioms in preference to overly clever techniques that purport to offer better performance. Even if the performance advantage is real, it may not remain in the face of steadily improving platform implementations. The subtle bugs and maintenance headaches that come from overly clever techniques, however, are sure to remain.
 
-这个故事的教训很简单：**异常，就像他们的名字所说的那样，只能被用在异常的情况下，绝不应该用作普通的流控制。**更加通俗地说，使用简单容易识别的模式，而不是使用哪些企图提供更好的性能的聪明过头的技术。即使其性能优势是真的，但是随着平台实现的不断升级，这种优势可能会没有了。但是来自这种技术的细微的bug以及难以维护的问题，却会一直存在。
+这个故事的教训很简单：\*\*异常，就像他们的名字所说的那样，只能被用在异常的情况下，绝不应该用作普通的流控制。\*\*更加通俗地说，使用简单容易识别的模式，而不是使用哪些企图提供更好的性能的聪明过头的技术。即使其性能优势是真的，但是随着平台实现的不断升级，这种优势可能会没有了。但是来自这种技术的细微的bug以及难以维护的问题，却会一直存在。
 
 > This principle also has implications for API design. **A well-designed API must not force its clients to use exceptions for ordinary control flow.** A class with a “state-dependent” method that can be invoked only under certain unpredictable conditions should generally have a separate “state-testing” method indicating whether it is appropriate to invoke the state-dependent method. For example, the Iterator interface has the state-dependent method next and the corresponding state-testing method hasNext. This enables the standard idiom for iterating over a collection with a traditional for loop (as well as the for-each loop, where the hasNext method is used internally):
 
-这个原则对于API设计也有一些指示。**一个设计良好的API不应该强迫其客户端使用异常来做正常的流控制。一个包含“依赖状态”的方法的类，依赖状态的方法即只能在某些特定的不可预测的环境下调用的方法，通常需要提供一个单独的“状态检测”方法，来表明掉用这个依赖状态的方法是否合适。比如，Iterator接口有一个依赖状态的方法next和一个相关的状态检测方法hasNext。这样就可以使用传统的for循环来对集合进行标准的遍历（也可以使用for-each循环，其内部也使用了hasNext方法）:
+这个原则对于API设计也有一些指示。\*\*一个设计良好的API不应该强迫其客户端使用异常来做正常的流控制。一个包含“依赖状态”的方法的类，依赖状态的方法即只能在某些特定的不可预测的环境下调用的方法，通常需要提供一个单独的“状态检测”方法，来表明掉用这个依赖状态的方法是否合适。比如，Iterator接口有一个依赖状态的方法next和一个相关的状态检测方法hasNext。这样就可以使用传统的for循环来对集合进行标准的遍历（也可以使用for-each循环，其内部也使用了hasNext方法）:
 
 ```java
 for (Iterator<Foo> i = collection.iterator(); i.hasNext(); ) {
