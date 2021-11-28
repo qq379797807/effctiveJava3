@@ -1,12 +1,8 @@
-## 6 枚举和注解
+# Item34 使用枚举代替int常量
 
-> **J**AVA supports two special-purpose families of reference types: a kind of class called an *enum type,* and a kind of interface called an *annotation type*. This chapter discusses best practices for using these type families.
+Item34 使用枚举代替int常量
 
-Java支持两种特殊用途的引用类型：一种是类，被称为枚举类型；一种是接口，被称为注解类型。本章主要介绍这两种新类型的最佳使用方法。
-
-### Item34 使用枚举代替int常量
-
-> An *enumerated type* is a type whose legal values consist of a fixed set of constants, such as the seasons of the year, the planets in the solar system, or the suits in a deck of playing cards. Before enum types were added to the language, a common pattern for representing enumerated types was to declare a group of named int constants, one for each member of the type:
+> An _enumerated type_ is a type whose legal values consist of a fixed set of constants, such as the seasons of the year, the planets in the solar system, or the suits in a deck of playing cards. Before enum types were added to the language, a common pattern for representing enumerated types was to declare a group of named int constants, one for each member of the type:
 
 一个枚举类型是指有一组固定的常量组成的合法值的类型，比如一年的季节，太阳系的星星，一副牌的花色。在enum类型被添加到java语言中之前，通常使用一组命名的int常量来表示枚举类型，每一个int值表示一个枚举类型的成员。代码如下：
 
@@ -21,7 +17,7 @@ Java支持两种特殊用途的引用类型：一种是类，被称为枚举类�
    public static final int ORANGE_BLOOD  = 2;
 ```
 
-> This technique, known as the int *enum pattern,* has many shortcomings. It provides nothing in the way of type safety and little in the way of expressive power. The compiler won’t complain if you pass an apple to a method that expects an orange, compare apples to oranges with the == operator, or worse:
+> This technique, known as the int _enum pattern,_ has many shortcomings. It provides nothing in the way of type safety and little in the way of expressive power. The compiler won’t complain if you pass an apple to a method that expects an orange, compare apples to oranges with the == operator, or worse:
 
 这种技术，称为”int枚举模式“，有跟多的缺点。它完全没有提供类型安全的保证，表达能力也不强。当你把一个apple传递给一个需要orange的方法时，编译器也不会生成警告，还可以使用==来对apple和orange进行比较，甚至更糟糕：
 
@@ -30,11 +26,11 @@ Java支持两种特殊用途的引用类型：一种是类，被称为枚举类�
 int i = (APPLE_FUJI - ORANGE_TEMPLE) / APPLE_PIPPIN;
 ```
 
-> Note that the name of each apple constant is prefixed with APPLE_ and the name of each orange constant is prefixed with ORANGE_. This is because Java doesn’t provide namespaces for int enum groups. Prefixes prevent name clashes when two int enum groups have identically named constants, for example between ELEMENT_MERCURY and PLANET_MERCURY.
+> Note that the name of each apple constant is prefixed with APPLE\_ and the name of each orange constant is prefixed with ORANGE\_. This is because Java doesn’t provide namespaces for int enum groups. Prefixes prevent name clashes when two int enum groups have identically named constants, for example between ELEMENT\_MERCURY and PLANET\_MERCURY.
 
-注意，每一个apple常量都有一个APPLE-前缀，每一个orange常量都有一个ORANGE-前缀。这是因为java没有为int枚举组提供命名空间。前缀可以防止两个int枚举组有同样的常量时，出现命名冲突，比如 ELEMENT_MERCURY和PLANET_MERCURY。
+注意，每一个apple常量都有一个APPLE-前缀，每一个orange常量都有一个ORANGE-前缀。这是因为java没有为int枚举组提供命名空间。前缀可以防止两个int枚举组有同样的常量时，出现命名冲突，比如 ELEMENT\_MERCURY和PLANET\_MERCURY。
 
-> Programs that use int enums are brittle. Because int enums are *constant variables* [JLS, 4.12.4], their int values are compiled into the clients that use them [JLS, 13.1]. If the value associated with an int enum is changed, its clients must be recompiled. If not, the clients will still run, but their behavior will be incorrect.
+> Programs that use int enums are brittle. Because int enums are _constant variables_ \[JLS, 4.12.4], their int values are compiled into the clients that use them \[JLS, 13.1]. If the value associated with an int enum is changed, its clients must be recompiled. If not, the clients will still run, but their behavior will be incorrect.
 >
 > There is no easy way to translate int enum constants into printable strings. If you print such a constant or display it from a debugger, all you see is a number, which isn’t very helpful. There is no reliable way to iterate over all the int enum constants in a group, or even to obtain the size of an int enum group.
 
@@ -42,11 +38,11 @@ int i = (APPLE_FUJI - ORANGE_TEMPLE) / APPLE_PIPPIN;
 
 没有一种容易的方法可以把这些int枚举值转换为可以打印出来的字符串。如果你直接在打印或者在调试器里显示这个常量，你看到的就是一个用处不大的数字。也没有可靠的方法来编译组里的所有int枚举常量，甚至没办法回去到int枚举组的大小。
 
-> You may encounter a variant of this pattern in which String constants are used in place of int constants. This variant, known as the String *enum pattern*, is even less desirable. While it does provide printable strings for its constants, it can lead naive users to hard-code string constants into client code instead of using field names. If such a hard-coded string constant contains a typographical error, it will escape detection at compile time and result in bugs at runtime. Also, it might lead to performance problems, because it relies on string comparisons.
+> You may encounter a variant of this pattern in which String constants are used in place of int constants. This variant, known as the String _enum pattern_, is even less desirable. While it does provide printable strings for its constants, it can lead naive users to hard-code string constants into client code instead of using field names. If such a hard-coded string constant contains a typographical error, it will escape detection at compile time and result in bugs at runtime. Also, it might lead to performance problems, because it relies on string comparisons.
 
 你可能遇到过int枚举模式的一种变体，这种变体使用String来代替int常量。这种变体被称为String枚举模式，更不值得推荐。虽然它为每个常量提供了可打印的字符串，但是它可能会让初级程序员在客户端代码中使用字符串硬编码，而不是使用变量名。一旦这样的硬编码中存在书写错误，就会导致程序在编译时正常，而运行时出错。而且这种模式还存在性能问题，因为它依赖字符串之间的比较。
 
-> Luckily, Java provides an alternative that avoids all the shortcomings of the int and string enum patterns and provides many added benefits. It is the *enum type* [JLS, 8.9]. Here’s how it looks in its simplest form:
+> Luckily, Java provides an alternative that avoids all the shortcomings of the int and string enum patterns and provides many added benefits. It is the _enum type_ \[JLS, 8.9]. Here’s how it looks in its simplest form:
 
 幸运的是，Java提供了一种另一种可替代的解决方案，克服了int和String枚举模式的所有问题，还提供了很多新增的好处，它就是枚举类型。下面是它最简单的一种形式：
 
@@ -57,7 +53,7 @@ public enum Orange { NAVEL, TEMPLE, BLOOD }
 
 > On the surface, these enum types may appear similar to those of other languages, such as C, C++, and C#, but appearances are deceiving. Java’s enum types are full-fledged classes, far more powerful than their counterparts in these other languages, where enums are essentially int values.
 
-从表面上看，枚举类型和其他语言比如C，C++和C#，好像有点类似。但实际上并非如此，Java中的Enum类型是功能齐全的类，比其他语言中的枚举要强大得多，其他语言的枚举本质上是int值（*此处，中文版书籍翻译为”java的枚举本质是int值“，我不认可，但又不确定*）。
+从表面上看，枚举类型和其他语言比如C，C++和C#，好像有点类似。但实际上并非如此，Java中的Enum类型是功能齐全的类，比其他语言中的枚举要强大得多，其他语言的枚举本质上是int值（_此处，中文版书籍翻译为”java的枚举本质是int值“，我不认可，但又不确定_）。
 
 > The basic idea behind Java’s enum types is simple: they are classes that export one instance for each enumeration constant via a public static final field. Enum types are effectively final, by virtue of having no accessible constructors. Because clients can neither create instances of an enum type nor extend it, there can be no instances but the declared enum constants. In other words, enum types are instance-controlled (page 6). They are a generalization of singletons (Item 3), which are essentially single-element enums.
 
@@ -146,7 +142,6 @@ public class WeightTable {
    Weight on SATURN is 197.120111
    Weight on URANUS is 167.398264
    Weight on NEPTUNE is 210.208751
-
 ```
 
 > Until 2006, two years after enums were added to Java, Pluto was a planet. This raises the question “what happens when you remove an element from an enum type?” The answer is that any client program that doesn’t refer to the removed element will continue to work fine. So, for example, our WeightTable program would simply print a table with one fewer row. And what of a client program that refers to the removed element (in this case, Planet.Pluto)? If you recompile the client program, the compilation will fail with a helpful error message at the line that refers to the erstwhile planet; if you fail to recompile the client, it will throw a helpful exception from this line at runtime. This is the best behavior you could hope for, far better than what you’d get with the int enum pattern.
@@ -161,7 +156,7 @@ public class WeightTable {
 
 如果一个枚举类型有普遍适用性，它就应该是一个顶级类；如果它只是在某个顶级类中使用，那么它应该是这个顶级类的成员类。比如，java.math.RoundingMode枚举类表示十进制小数的舍入模式（rounding mode）。这个舍入模式只在Bigdecimal类里使用，但是RoundingMode提供了一个有用的抽象，不仅仅局限于BigDecimal类。因此类库设计者通过把RoundingMode做成一个顶级类，以鼓励其他需要舍入模式的程序员重用这个枚举，从而增加API之间的一致性。
 
-> The techniques demonstrated in the Planet example are sufficient for most enum types, but sometimes you need more. There is different data associated with each Planet constant, but sometimes you need to associate fundamentally different *behavior* with each constant. For example, suppose you are writing an enum type to represent the operations on a basic four-function calculator and you want to provide a method to perform the arithmetic operation represented by each con- stant. One way to achieve this is to switch on the value of the enum:
+> The techniques demonstrated in the Planet example are sufficient for most enum types, but sometimes you need more. There is different data associated with each Planet constant, but sometimes you need to associate fundamentally different _behavior_ with each constant. For example, suppose you are writing an enum type to represent the operations on a basic four-function calculator and you want to provide a method to perform the arithmetic operation represented by each con- stant. One way to achieve this is to switch on the value of the enum:
 
 Planet示例中的技术对于对于大部分的枚举类型来说，已经足够了，但是有时候，你可能需要更多。在Planet的每个实例上关联了不同的数据，有时候，你可能还需要每个实例关联不同的行为。比如，假如你在写一个表示基本四则运算的枚举类型，你想提供一个方法来执行每个实例表示的算数操作。下面是一种通过在枚举的值上使用switch来实现的代码：
 
@@ -182,11 +177,11 @@ public enum Operation {
 }
 ```
 
-> This code works, but it isn’t very pretty. It won’t compile without the throw statement because the end of the method is technically reachable, even though it will never be reached [JLS, 14.21]. Worse, the code is fragile. If you add a new enum constant but forget to add a corresponding case to the switch, the enum will still compile, but it will fail at runtime when you try to apply the new operation.
+> This code works, but it isn’t very pretty. It won’t compile without the throw statement because the end of the method is technically reachable, even though it will never be reached \[JLS, 14.21]. Worse, the code is fragile. If you add a new enum constant but forget to add a corresponding case to the switch, the enum will still compile, but it will fail at runtime when you try to apply the new operation.
 >
-> Luckily, there is a better way to associate a different behavior with each enum constant: declare an abstract apply method in the enum type, and override it with a concrete method for each constant in a *constant-specific class body*. Such methods are known as *constant-specific method implementations*:
+> Luckily, there is a better way to associate a different behavior with each enum constant: declare an abstract apply method in the enum type, and override it with a concrete method for each constant in a _constant-specific class body_. Such methods are known as _constant-specific method implementations_:
 
-这个代码可以工作，但是不是很完美。如果没有throw语句，代码将无法编译，因为从技术的角度上来说，这个方法的末尾是可达的，即使它实际上并不会执行到这段代码[JLS, 14.21]。更糟糕的是，这段代码是易碎的。当你添加了一个新的枚举常量，但是又忘记了在switch语句中添加对应的case的时候，这个enum还是可以编译，但是在运行时，当你想应用这个新的操作的时候，就会失败。
+这个代码可以工作，但是不是很完美。如果没有throw语句，代码将无法编译，因为从技术的角度上来说，这个方法的末尾是可达的，即使它实际上并不会执行到这段代码\[JLS, 14.21]。更糟糕的是，这段代码是易碎的。当你添加了一个新的枚举常量，但是又忘记了在switch语句中添加对应的case的时候，这个enum还是可以编译，但是在运行时，当你想应用这个新的操作的时候，就会失败。
 
 幸运的是，这里有一个很好的方法可以给每个枚举常量关联一个不同的行为：在enum类中声明一个抽象的apply方法，然后在“特定于常量的类主体”中，使用具体的方法来覆盖每个常量的抽象方法。这种方法被称为“特定于常量的方法实现”。代码如下：
 
@@ -257,7 +252,7 @@ public static void main(String[] args) {
 
 > Enum types have an automatically generated valueOf(String) method that translates a constant’s name into the constant itself. If you override the toString method in an enum type, consider writing a fromString method to translate the custom string representation back to the corresponding enum. The following code (with the type name changed appropriately) will do the trick for any enum, so long as each constant has a unique string representation:
 
-Enum类型有一个自动生成的valueOf(String)方法，可以将常量的名字转换为常量本身（*这个方法是和toString方法相对应的*），如果你覆盖了toString，就需要考虑写一个fromString方法，来把习惯的字符串表达转换为对应的枚举。下面这个代码（按照需要改变类型的名字）可以为所有的Enum类型提供这一技巧，只要每一个常量都有一个独一无二的字符串表达：
+Enum类型有一个自动生成的valueOf(String)方法，可以将常量的名字转换为常量本身（_这个方法是和toString方法相对应的_），如果你覆盖了toString，就需要考虑写一个fromString方法，来把习惯的字符串表达转换为对应的枚举。下面这个代码（按照需要改变类型的名字）可以为所有的Enum类型提供这一技巧，只要每一个常量都有一个独一无二的字符串表达：
 
 ```java
 // Implementing a fromString method on an enum type
@@ -270,13 +265,13 @@ Enum类型有一个自动生成的valueOf(String)方法，可以将常量的名�
    }
 ```
 
-> Note that the Operation constants are put into the stringToEnum map from a static field initialization that runs after the enum constants have been created. The previous code uses a stream (Chapter 7) over the array returned by the values() method; prior to Java 8, we would have created an empty hash map and iterated over the values array inserting the string-to-enum mappings into the map, and you can still do it that way if you prefer. But note that attempting to have each constant put itself into a map from its own constructor does *not* work. It would cause a compilation error, which is good thing because if it were legal, it would cause a NullPointerException at runtime. Enum constructors aren’t permitted to access the enum’s static fields, with the exception of constant variables (Item 34). This restriction is necessary because static fields have not yet been initialized when enum constructors run. A special case of this restriction is that enum constants cannot access one another from their constructors.
+> Note that the Operation constants are put into the stringToEnum map from a static field initialization that runs after the enum constants have been created. The previous code uses a stream (Chapter 7) over the array returned by the values() method; prior to Java 8, we would have created an empty hash map and iterated over the values array inserting the string-to-enum mappings into the map, and you can still do it that way if you prefer. But note that attempting to have each constant put itself into a map from its own constructor does _not_ work. It would cause a compilation error, which is good thing because if it were legal, it would cause a NullPointerException at runtime. Enum constructors aren’t permitted to access the enum’s static fields, with the exception of constant variables (Item 34). This restriction is necessary because static fields have not yet been initialized when enum constructors run. A special case of this restriction is that enum constants cannot access one another from their constructors.
 
 需要注意的是，在枚举常量被创建后，Operation常量在一个静态域的初始化中被放在stringToEnum map中。前面的代码在values返回的数组上使用了Stream（Chapter 7)；在Java8之前，我们可能会创建一个空的HashMap，然后遍历这个值数组，把字符串到枚举实例的映射添加到map里去；你也可以按照你喜欢的方法来做。但是需要注意的是，企图在每一个实例的构造器中将自己放在map里的操作是不可行的，会生成一个编译器error，这是好事，因为如果他是合法的话，在运行时就会生成NullPointException。Enum构造器不允许访问除了常量域以外Enum的静态域。这个限制是很有必要的，因为当枚举构造器执行的时候，其静态域还没有进行初始化。这个限制有一个特殊的情况就是，enum常量也不同通过构造器访问其他的常量。
 
-> Also note that the fromString method returns an Optional<String>. This allows the method to indicate that the string that was passed in does not represent a valid operation, and it forces the client to confront this possibility (Item 55).
+> Also note that the fromString method returns an Optional. This allows the method to indicate that the string that was passed in does not represent a valid operation, and it forces the client to confront this possibility (Item 55).
 
-还需要注意的是fromString返回的是一个Optional<String>。它表明：传进来的字符串可能并不是一个合法的操作，并强迫客户端面对这一可能性（Item55）。
+还需要注意的是fromString返回的是一个Optional。它表明：传进来的字符串可能并不是一个合法的操作，并强迫客户端面对这一可能性（Item55）。
 
 > A disadvantage of constant-specific method implementations is that they make it harder to share code among enum constants. For example, consider an enum representing the days of the week in a payroll package. This enum has a method that calculates a worker’s pay for that day given the worker’s base salary (per hour) and the number of minutes worked on that day. On the five weekdays, any time worked in excess of a normal shift generates overtime pay; on the two weekend days, all work generates overtime pay. With a switch statement, it’s easy to do this calculation by applying multiple case labels to each of two code fragments:
 
@@ -316,9 +311,9 @@ Enum类型有一个自动生成的valueOf(String)方法，可以将常量的名�
 
 这些样板代码可以通过以下方法来减少：将PayrollDay中的抽象overtimePay方法改为计算工作日的额外工资的具体方法。然后，就只有休息日需要覆盖这个方法了。但是这个方法和switch语句有一样的缺点了：如果你新增了另外一个日子，没有覆盖这个overtimePay方法，也就默认使用了工作日的计算方法。
 
-> What you really want is to be *forced* to choose an overtime pay strategy each time you add an enum constant. Luckily, there is a nice way to achieve this. The idea is to move the overtime pay computation into a private nested enum, and to pass an instance of this *strategy enum* to the constructor for the PayrollDay enum. The PayrollDay enum then delegates the overtime pay calculation to the strategy enum, eliminating the need for a switch statement or constant-specific method implementation in PayrollDay. While this pattern is less concise than the switch statement, it is safer and more flexible:
+> What you really want is to be _forced_ to choose an overtime pay strategy each time you add an enum constant. Luckily, there is a nice way to achieve this. The idea is to move the overtime pay computation into a private nested enum, and to pass an instance of this _strategy enum_ to the constructor for the PayrollDay enum. The PayrollDay enum then delegates the overtime pay calculation to the strategy enum, eliminating the need for a switch statement or constant-specific method implementation in PayrollDay. While this pattern is less concise than the switch statement, it is safer and more flexible:
 
-我们真正想要的，就是当我们新增一个枚举常量的时候，每次都需要强制选择一个计算额外工资的策略。幸运的是，有一个很好的方法可以做到。这个方法就是将额外工资的计算放在私有嵌套枚举类中，然后在PayrollDay枚举的构造器中传入一个策略枚举（*即私有嵌套枚举*）的实例。然后PayrollDay枚举将额外工资的计算委托给策略枚举，在PayrollDay里便不再需要switch语句和特定于实例的方法实现了。虽然这种模式没有switch语句简洁，但是它更安全，也更灵活。代码如下：
+我们真正想要的，就是当我们新增一个枚举常量的时候，每次都需要强制选择一个计算额外工资的策略。幸运的是，有一个很好的方法可以做到。这个方法就是将额外工资的计算放在私有嵌套枚举类中，然后在PayrollDay枚举的构造器中传入一个策略枚举（_即私有嵌套枚举_）的实例。然后PayrollDay枚举将额外工资的计算委托给策略枚举，在PayrollDay里便不再需要switch语句和特定于实例的方法实现了。虽然这种模式没有switch语句简洁，但是它更安全，也更灵活。代码如下：
 
 ```java
 // The strategy enum pattern
@@ -354,7 +349,7 @@ Enum类型有一个自动生成的valueOf(String)方法，可以将常量的名�
 }
 ```
 
-> If switch statements on enums are not a good choice for implementing constant-specific behavior on enums, what *are* they good for? **Switches on enums are good for augmenting enum types with constant-specific behavior.** For example, suppose the Operation enum is not under your control and you wish it had an instance method to return the inverse of each operation. You could simulate the effect with the following static method:
+> If switch statements on enums are not a good choice for implementing constant-specific behavior on enums, what _are_ they good for? **Switches on enums are good for augmenting enum types with constant-specific behavior.** For example, suppose the Operation enum is not under your control and you wish it had an instance method to return the inverse of each operation. You could simulate the effect with the following static method:
 
 既然switch 语句不是用来实现枚举中特定于常量的行为的最好的选择，那它有什么用处呢？**枚举上的Switch语句可以用来给枚举类型增加一个特定于常量的行为**。比如，假如这个Operation枚举不在你的控制范围内，然后你希望它有一个实例方法来返回每个操作的反操作。你可以使用如下的静态方法来模拟这一效果：
 
@@ -372,7 +367,7 @@ public static Operation inverse(Operation op) {
 }
 ```
 
-> You should also use this technique on enum types that *are* under your control if a method simply doesn’t belong in the enum type. The method may be required for some use but is not generally useful enough to merit inclusion in the enum type.
+> You should also use this technique on enum types that _are_ under your control if a method simply doesn’t belong in the enum type. The method may be required for some use but is not generally useful enough to merit inclusion in the enum type.
 
 如果这个方法确实不属于这个枚举类型，你也可以在那些受你控制的枚举中使用这个技巧。这个方法有点用处，但是又还不至于要放到enum类型里面去。
 
@@ -387,16 +382,3 @@ public static Operation inverse(Operation op) {
 > In summary, the advantages of enum types over int constants are compelling. Enums are more readable, safer, and more powerful. Many enums require no explicit constructors or members, but others benefit from associating data with each constant and providing methods whose behavior is affected by this data. Fewer enums benefit from associating multiple behaviors with a single method. In this relatively rare case, prefer constant-specific methods to enums that switch on their own values. Consider the strategy enum pattern if some, but not all, enum constants share common behaviors.
 
 总的来说，枚举类型相对于int常量的优势是让人难以拒绝的。枚举类型可读性更好，更安全，也更加强大。一些枚举类型不需要显示的构造器和成员，也有一些枚举可以从每个常量关联的数据，以及提供的行为受数据影响的方法中获得好处。少数的枚举需要将多个行为和一个方法关联，在这种比较少的情况下，特定于常量的方法实现，比在枚举值上进行switch，要好得多。当有多个（但不是全部）使用需要共用相同的行为的时候，可以考虑使用策略枚举模式。
-
-
-
-
-
-
-
-
-
-
-
-
-
