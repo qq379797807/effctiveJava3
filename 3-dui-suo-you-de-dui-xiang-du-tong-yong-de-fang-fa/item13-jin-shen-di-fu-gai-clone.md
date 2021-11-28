@@ -1,14 +1,16 @@
-### Item13 谨慎地覆盖clone
+# Item13 谨慎地覆盖clone
 
-> The Cloneable interface was intended as a *mixin interface* (Item 20) for classes to advertise that they permit cloning. Unfortunately, it fails to serve this purpose. Its primary flaw is that it lacks a clone method, and Object’s clone method is protected. You cannot, without resorting to *reflection* (Item 65), invoke clone on an object merely because it implements Cloneable. Even a reflective invocation may fail, because there is no guarantee that the object has an accessible clone method. Despite this flaw and many others, the facility is in reasonably wide use, so it pays to understand it. This item tells you how to implement a well-behaved clone method, discusses when it is appropriate to do so, and presents alternatives.
+#### Item13 谨慎地覆盖clone
+
+> The Cloneable interface was intended as a _mixin interface_ (Item 20) for classes to advertise that they permit cloning. Unfortunately, it fails to serve this purpose. Its primary flaw is that it lacks a clone method, and Object’s clone method is protected. You cannot, without resorting to _reflection_ (Item 65), invoke clone on an object merely because it implements Cloneable. Even a reflective invocation may fail, because there is no guarantee that the object has an accessible clone method. Despite this flaw and many others, the facility is in reasonably wide use, so it pays to understand it. This item tells you how to implement a well-behaved clone method, discusses when it is appropriate to do so, and presents alternatives.
 >
-> So what *does* Cloneable do, given that it contains no methods? It determines the behavior of Object’s protected clone implementation: if a class implements Cloneable, Object’s clone method returns a field-by-field copy of the object; otherwise it throws CloneNotSupportedException. This is a highly atypical use of interfaces and not one to be emulated. Normally, implementing an interface says something about what a class can do for its clients. In this case, it modifies the behavior of a protected method on a superclass.
+> So what _does_ Cloneable do, given that it contains no methods? It determines the behavior of Object’s protected clone implementation: if a class implements Cloneable, Object’s clone method returns a field-by-field copy of the object; otherwise it throws CloneNotSupportedException. This is a highly atypical use of interfaces and not one to be emulated. Normally, implementing an interface says something about what a class can do for its clients. In this case, it modifies the behavior of a protected method on a superclass.
 
 Cloneable结果被设计为类的mixin接口（详见Item20），用来声明这个类允许clone。不幸的是，它并不能达到这个目标，因为它并没有clone方法，而且Object的clone方法是受保护的（protected）。你不能仅仅因为这个类实现了Cloneable接口，就可以调用它的clone方法，除非使用反射（Item65)。甚至有时候反射也会失败，因为没有办法保证这个对象有一个可访问的clone方法。虽然有很多的问题，但是这种方法确实被广泛使用了，因此还是值得我们去学习的。在本条里，将告诉你如何去实现一个表现不错的clone方法，也讨论了还何时应该这么做，还提供了一些可以替代的方案。
 
-那么啥方法都没有的Cloneable方法有啥用呢？它确定了Object中被保护的clone方法的具体的实现方式，若果一个类实现了Cloneable接口，对象的clone方法返回对该对象的一个拷贝，该拷贝是通过对原对象的每个域的挨着挨着的复制得到的；否则clone方法就将抛出CloneNotSupportedException。这是接口的一个反常的使用方式，不应该去模仿。通常情况下，我们实现一个接口就是声明这个对象可以为客户端提供哪些功能。而在Cloneable这里，它修改了父类的被保护方法clone的行为。
+那么啥方法都没有的Cloneable方法有啥用呢？它确定了Object中被保护的clone方法的具体的实现方式，如果一个类实现了Cloneable接口，该类的对象的clone方法返回该对象的一个拷贝，该拷贝是通过对原对象的每个域的一个接一个复制得到的；否则clone方法就将抛出CloneNotSupportedException。这是接口的一个反常的使用方式，不应该去模仿。通常情况下，我们实现一个接口就是声明这个对象可以为客户端提供哪些功能。而在Cloneable这里，它修改了父类的被保护方法clone的行为。
 
-> Though the specification doesn’t say it, **in practice, a class implementing** **Cloneable** **is expected to provide a properly functioning public** **clone** **method.** In order to achieve this, the class and all of its superclasses must obey a complex, unenforceable, thinly documented protocol. The resulting mechanism is fragile, dangerous, and *extralinguistic*: it creates objects without calling a constructor.
+> Though the specification doesn’t say it, **in practice, a class implementing** **Cloneable** **is expected to provide a properly functioning public** **clone** **method.** In order to achieve this, the class and all of its superclasses must obey a complex, unenforceable, thinly documented protocol. The resulting mechanism is fragile, dangerous, and _extralinguistic_: it creates objects without calling a constructor.
 >
 > The general contract for the clone method is weak. Here it is, copied from the Object specification :
 
@@ -18,7 +20,7 @@ clone方法的通用约定是非常弱的，下面是从Object规范里的复制
 
 > Creates and returns a copy of this object. The precise meaning of “copy” may depend on the class of the object. The general intent is that, for any object x, the expression
 >
-> x.clone() != x 
+> x.clone() != x
 >
 > will be true, and the expression
 >
@@ -30,7 +32,7 @@ clone方法的通用约定是非常弱的，下面是从Object规范里的复制
 >
 > will be true, this is not an absolute requirement.
 
-创建并返回一个这个对象的拷贝。拷贝的具体的定义取决于这个对象的类，通常来说，对于一个对象x，表达式x.clone() != x 
+创建并返回一个这个对象的拷贝。拷贝的具体的定义取决于这个对象的类，通常来说，对于一个对象x，表达式x.clone() != x
 
 应该返回true，同时表达式
 
@@ -52,9 +54,9 @@ x.clone().equals(x)
 
 按照约定，返回的对象必须独立于被拷贝的对象，为了达到这个目标，在调用super.clone()后，返回对象前，修改返回对象的一些域是很有必要的。
 
-> This mechanism is vaguely similar to constructor chaining, except that it isn’t enforced: if a class’s clone method returns an instance that is *not* obtained by call- ing super.clone but by calling a constructor, the compiler won’t complain, but if a subclass of that class calls super.clone, the resulting object will have the wrong class, preventing the subclass from clone method from working properly. If a class that overrides clone is final, this convention may be safely ignored, as there are no subclasses to worry about. But if a final class has a clone method that does not invoke super.clone, there is no reason for the class to implement Cloneable, as it doesn’t rely on the behavior of Object’s clone implementation.
+> This mechanism is vaguely similar to constructor chaining, except that it isn’t enforced: if a class’s clone method returns an instance that is _not_ obtained by call- ing super.clone but by calling a constructor, the compiler won’t complain, but if a subclass of that class calls super.clone, the resulting object will have the wrong class, preventing the subclass from clone method from working properly. If a class that overrides clone is final, this convention may be safely ignored, as there are no subclasses to worry about. But if a final class has a clone method that does not invoke super.clone, there is no reason for the class to implement Cloneable, as it doesn’t rely on the behavior of Object’s clone implementation.
 
-这种机制和构造器调用链有点相似，但是这个不是强制的。如果一个类的clone方法返回的对象不是通过调用super.clone()获得的，而是调用构造器获得的，此时编译器也不会报错。但是如果这个类的子类，调用了super.clone方法，返回的对象的类就是错误的，使得这个子类的clone方法无法正常工作。如果覆盖clone方法的类是final的，那么这个问题就可以安全地忽略掉，因为没有子类会出问题。如果一个final类的clone方法里没有调用super.clone方法，那么也就没有必要实现Cloneable接口了，因为它完全不依赖Object的clone方法的实现行为。
+这种机制和构造器调用链有点相似，但这个不是强制的。如果一个类的clone方法返回的对象不是通过调用super.clone()获得的，而是调用构造器获得的，此时编译器也不会报错。但是如果这个类的子类，调用了super.clone方法，返回的对象的类就是错误的，使得这个子类的clone方法无法正常工作。如果覆盖clone方法的类是final的，那么这个问题就可以安全地忽略掉，因为没有子类会出问题。如果一个final类的clone方法里没有调用super.clone方法，那么也就没有必要实现Cloneable接口了，因为它完全不依赖Object的clone方法的实现行为。
 
 > Suppose you want to implement Cloneable in a class whose superclass provides a well-behaved clone method. First call super.clone. The object you get back will be a fully functional replica of the original. Any fields declared in your class will have values identical to those of the original. If every field contains a primitive value or a reference to an immutable object, the returned object may be exactly what you need, in which case no further processing is necessary. This is the case, for example, for the PhoneNumber class in Item 11, but note that **immutable classes should never provide a** **clone** **method** because it would merely encourage wasteful copying. With that caveat, here’s how a clone method for PhoneNumber would look:
 
@@ -71,11 +73,11 @@ x.clone().equals(x)
 }
 ```
 
-> In order for this method to work, the class declaration for PhoneNumber would have to be modified to indicate that it implements Cloneable. Though Object’s clone method returns Object, this clone method returns PhoneNumber. It is legal and desirable to do this because Java supports *covariant return types*. In other words, an overriding method’s return type can be a subclass of the overridden method’s return type. This eliminates the need for casting in the client. We must cast the result of super.clone from Object to PhoneNumber before returning it, but the cast is guaranteed to succeed.
+> In order for this method to work, the class declaration for PhoneNumber would have to be modified to indicate that it implements Cloneable. Though Object’s clone method returns Object, this clone method returns PhoneNumber. It is legal and desirable to do this because Java supports _covariant return types_. In other words, an overriding method’s return type can be a subclass of the overridden method’s return type. This eliminates the need for casting in the client. We must cast the result of super.clone from Object to PhoneNumber before returning it, but the cast is guaranteed to succeed.
 
 为了让这个方法生效，我们需要把PhoneNumber的类声明上明确表示实现Cloneable。虽然Object的clone方法返回Object，但这个clone方法返回的是PhoneNumber。这个是合法的，并且推荐这么做，因为java是支持协变返回类型（convariant return types）的。换句话说，一个覆盖方法可以返回原方法的返回类型的子类。这样在客户端里就不需要进行转换了。因此我们在返回这个对象前，必须要将super.clone方法的返回值转换成PhoneNumber类，这个类型转换是一定会成功的。
 
-> The call to super.clone is contained in a try-catch block. This is because Object declares its clone method to throw CloneNotSupportedException, which is a *checked exception*. Because PhoneNumber implements Cloneable, we know the call to super.clone will succeed. The need for this boilerplate indicates that CloneNotSupportedException should have been unchecked (Item 71).
+> The call to super.clone is contained in a try-catch block. This is because Object declares its clone method to throw CloneNotSupportedException, which is a _checked exception_. Because PhoneNumber implements Cloneable, we know the call to super.clone will succeed. The need for this boilerplate indicates that CloneNotSupportedException should have been unchecked (Item 71).
 
 对super.clone方法的调用时包含在一个try-catch块中的，这是因为Object声明了其clone方法会抛出CloneNotSupportedException，这是一个受检异常（checked exception）。因为PhoneNumber实现了Cloneable接口，因此我们知道super.clone方法的调用一定会成功。上面的样本代码也指明了CloneNotSupportedException异常将不会被检测到。
 
@@ -116,7 +118,7 @@ public class Stack {
 
 假如你想把这个类做成可clone的，如果它的clone方法也只是返回super.clone()，返回的Stack实例的size域将有正确的值，但是elements域却和原始的Stack实例指向了同一个数组。改变原始对象就会破坏复制对象的约束条件，反之亦然。很快你就会发现你的程序产生了一些毫无意义的结果，甚至会抛出NullPointerException。
 
-如果直接调用Stack的唯一的构造器的话，这种情形就不会出现了。**实际上，clone方法就是另一个构造器，必须要保证不会破坏原始的对象，同时正确地建立克隆对象的约束条件。** 为了防Stack上的clone方法正常工作，必须要拷贝栈里的对象。最简单的方法就是在elements数组上递归的调用其clone方法。如下：
+如果直接调用Stack的唯一的构造器的话，这种情形就不会出现了。**实际上，clone方法就是另一个构造器，必须要保证不会破坏原始的对象，同时正确地建立克隆对象的约束条件。** 为了让Stack上的clone方法正常工作，必须要拷贝栈里的对象。最简单的方法就是在elements数组上递归的调用其clone方法。如下：
 
 ```java
 // Clone method for class with references to mutable state
@@ -131,17 +133,17 @@ public class Stack {
 }
 ```
 
-> Note that we do not have to cast the result of elements.clone to Object[]. Calling clone on an array returns an array whose runtime and compile-time types are identical to those of the array being cloned. This is the preferred idiom to duplicate an array. In fact, arrays are the sole compelling use of the clone facility.
+> Note that we do not have to cast the result of elements.clone to Object\[]. Calling clone on an array returns an array whose runtime and compile-time types are identical to those of the array being cloned. This is the preferred idiom to duplicate an array. In fact, arrays are the sole compelling use of the clone facility.
 >
 > Note also that the earlier solution would not work if the elements field were final because clone would be prohibited from assigning a new value to the field. This is a fundamental problem: like serialization, **the** **Cloneable** **architecture is incompatible with normal use of final fields referring to mutable objects**, except in cases where the mutable objects may be safely shared between an object and its clone. In order to make a class cloneable, it may be necessary to remove final modifiers from some fields.
 
-需要注意的是，我们不需要将elements.clone的结果转换为Object[]。因为调用对象上的clone返回的数组的编译时类型和原始数组的类型一致。这是复制数组的最佳方式。实际上，数组是clone方法的唯一吸引人的用法。
+需要注意的是，我们不需要将elements.clone的结果转换为Object\[]。因为调用对象上的clone返回的数组的编译时类型和原始数组的类型一致。这是复制数组的最佳方式。实际上，数组是clone方法的唯一吸引人的用法。
 
 还需要注意的是，如果elements域是final的，前面的方法就不能正常工作，因为在其clone方法里，不能将新的值赋给一个final域。这是一个根本问题：就像序列化一样。**Cloneable的架构和指向可变对象的final域的正常用法是不兼容的，**除非，这个可变对象可以在源对象和其复制对象中安全的共用。为了使得一个类可clone，就有必要将一些域的final修饰符去掉。
 
 > It is not always sufficient merely to call clone recursively. For example, suppose you are writing a clone method for a hash table whose internals consist of an array of buckets, each of which references the first entry in a linked list of key-value pairs. For performance, the class implements its own lightweight singly linked list instead of using java.util.LinkedList internally:
 
-有的时候仅仅递归的调用clone方法还不够。比如，假如你要写一个hash表的clone方法，这个hash表包含一个散列桶数组，每个散列通指向键值对列表的第一项。处于性能的考虑，这个类自己实现了轻量级的链表，没有使用java.util.LinkedList。如下：
+有的时候仅仅递归的调用clone方法还不够。比如，假如你要写一个hash表的clone方法，这个hash表包含一个散列桶数组，每个散列桶指向键值对列表的第一项。处于性能的考虑，这个类自己实现了轻量级的链表，没有使用java.util.LinkedList。如下：
 
 ```java
 public class HashTable implements Cloneable {
@@ -235,15 +237,15 @@ public class HashTable implements Cloneable {
 
 > Like a constructor, a clone method must never invoke an overridable method on the clone under construction (Item 19). If clone invokes a method that is overridden in a subclass, this method will execute before the subclass has had a chance to fix its state in the clone, quite possibly leading to corruption in the clone and the original. Therefore, the put(key, value) method discussed in the previous paragraph should be either final or private. (If it is private, it is presumably the “helper method” for a nonfinal public method.)
 
-和构造器类似，clone方法在构造过程中绝对不能调用可以被覆盖的方法（Item19）。如果clone方法调用了一个在子类中覆盖了的方法，那么这个方法就会再子类修正克隆对象的状态之前被调用，很有可能导致clone对象和原始对象不一致。因此，前面讨论的put(key, value)方法就应该是final的或者private的（如果一个方法是private的，那这个方法一般都是非final、public方法的“辅助方法”）。
+和构造器类似，clone方法在构造过程中绝对不能调用可以被覆盖的方法（Item19）。如果clone方法调用了一个在子类中覆盖了的方法，那么这个方法就会在子类修正克隆对象的状态之前被调用，很有可能导致clone对象和原始对象不一致。因此，前面讨论的put(key, value)方法就应该是final的或者private的（如果一个方法是private的，那这个方法一般都是非final、public方法的“辅助方法”）。
 
 > Object’s clone method is declared to throw CloneNotSupportedException, but overriding methods need not. **Public** **clone** **methods should omit the** **throws** **clause**, as methods that don’t throw checked exceptions are easier to use (Item 71).
 >
-> You have two choices when designing a class for inheritance (Item 19), but whichever one you choose, the class should *not* implement Cloneable. You may choose to mimic the behavior of Object by implementing a properly functioning protected clone method that is declared to throw CloneNotSupportedException. This gives subclasses the freedom to implement Cloneable or not, just as if they extended Object directly. Alternatively, you may choose *not* to implement a working clone method, and to prevent subclasses from implementing one, by providing the following degenerate clone implementation:
+> You have two choices when designing a class for inheritance (Item 19), but whichever one you choose, the class should _not_ implement Cloneable. You may choose to mimic the behavior of Object by implementing a properly functioning protected clone method that is declared to throw CloneNotSupportedException. This gives subclasses the freedom to implement Cloneable or not, just as if they extended Object directly. Alternatively, you may choose _not_ to implement a working clone method, and to prevent subclasses from implementing one, by providing the following degenerate clone implementation:
 
-Object的clone方法会抛出CloneNotSupportedException，但是覆盖后的方法却不用 抛异常。公用的clone方法应该省略掉throws声明，因为不抛出受检异常的方法用起来更简单些。
+Object的clone方法会抛出CloneNotSupportedException，但是覆盖后的方法却不用抛异常。公用的clone方法应该省略掉throws声明，因为不抛出受检异常的方法用起来更简单些。
 
-<span id="Item13inheritance">当你在设计一个用来继承的类的时候，你有两种方法可以选择（item19）</span>，但不论你选择哪一种，都不应该实现Cloneable。你可以选择像Object的clone方法一样，实现一个功能合适、声明抛出CloneNotSupportedException的、protected的clone方法。它使得子类可以选择是否实现Cloneable接口，就像是直接继承的Object类一样。或者，你可以选择提供一个退化的clone实现如下，实现一个无效的clone方法，还可以防止子类实现。
+当你在设计一个用来继承的类的时候，你有两种方法可以选择（item19），但不论你选择哪一种，都不应该实现Cloneable。你可以选择像Object的clone方法一样，实现一个功能合适、声明抛出CloneNotSupportedException的、protected的clone方法。它使得子类可以选择是否实现Cloneable接口，就像是直接继承的Object类一样。或者，你可以选择提供一个退化的clone实现如下，实现一个无效的clone方法，还可以防止子类实现。
 
 ```java
 // clone method for extendable class not supporting Cloneable
@@ -251,7 +253,6 @@ Object的clone方法会抛出CloneNotSupportedException，但是覆盖后的方�
 protected final Object clone() throws CloneNotSupportedException {
        throw new CloneNotSupportedException();
    }
-
 ```
 
 > There is one more detail that bears noting. If you write a thread-safe class that implements Cloneable, remember that its clone method must be properly synchronized, just like any other method (Item 78). Object’s clone method is not synchronized, so even if its implementation is otherwise satisfactory, you may have to write a synchronized clone method that returns super.clone().
@@ -264,7 +265,7 @@ protected final Object clone() throws CloneNotSupportedException {
 
 > Is all this complexity really necessary? Rarely. If you extend a class that already implements Cloneable, you have little choice but to implement a wellbehaved clone method. Otherwise, you are usually better off providing an alternative means of object copying. **A better approach to object copying is to provide a** **copy constructor or copy factory**.A copy constructor is simply a constructor that takes a single argument whose type is the class containing the constructor, for example,
 
-这么复杂有必要吗？很少有必要。只有当你确实要继承一个已经实现了Cloneable的类时，除了实现一个好的clone方法以外，别无选择。其他情况下，你通常可以提供一个其他的方法来代替使用对象复制。**相对于对象复制，更好的方法是提供一个复制构造器或者复制工厂。**一个复制构造器就是一个构造器，只有一个类型和构造器所在类相同的参数，如下：
+这么复杂clone真的需要吗？很少需要。只有当你确实要继承一个已经实现了Cloneable的类时，除了实现一个好的clone方法以外，别无选择。其他情况下，你通常可以提供一个其他的方法来代替使用对象复制。**相对于对象复制，更好的方法是提供一个复制构造器或者复制工厂。**一个复制构造器就是一个构造器，只有一个类型和构造器所在类相同的参数，如下：
 
 ```java
 // Copy constructor
@@ -282,7 +283,7 @@ protected final Object clone() throws CloneNotSupportedException {
 
 > The copy constructor approach and its static factory variant have many advantages over Cloneable/clone: they don’t rely on a risk-prone extralinguistic object creation mechanism; they don’t demand unenforceable adherence to thinly documented conventions; they don’t conflict with the proper use of final fields; they don’t throw unnecessary checked exceptions; and they don’t require casts.
 >
-> Furthermore, a copy constructor or factory can take an argument whose type is an interface implemented by the class. For example, by convention all general- purpose collection implementations provide a constructor whose argument is of type Collection or Map. Interface-based copy constructors and factories, more properly known as *conversion constructors* and *conversion factories*, allow the client to choose the implementation type of the copy rather than forcing the client to accept the implementation type of the original. For example, suppose you have a HashSet, s, and you want to copy it as a TreeSet. The clone method can’t offer this functionality, but it’s easy with a conversion constructor: new TreeSet<>(s).
+> Furthermore, a copy constructor or factory can take an argument whose type is an interface implemented by the class. For example, by convention all general- purpose collection implementations provide a constructor whose argument is of type Collection or Map. Interface-based copy constructors and factories, more properly known as _conversion constructors_ and _conversion factories_, allow the client to choose the implementation type of the copy rather than forcing the client to accept the implementation type of the original. For example, suppose you have a HashSet, s, and you want to copy it as a TreeSet. The clone method can’t offer this functionality, but it’s easy with a conversion constructor: new TreeSet<>(s).
 
 相对于Cloneable/clone而言，复制构造器以及其静态工厂变体（即复制工厂）有以下几个优势：首先它们不依赖有风险的、语言之外的对象创建机制；其次它们不要求遵守还没有制定好的文档规范；然后它们也不会和final域的正常使用产生冲突；它们也不会抛出不必要的受检异常；最后它们还不需要转换类型。
 
@@ -292,4 +293,4 @@ protected final Object clone() throws CloneNotSupportedException {
 
 既然所有的问题都和Cloneable接口有关，那么新的接口就不应该继承这个接口，新的可扩展的类也不应该实现它。即使对于final类而言，实现Cloneable危害比较小，但是这个应该被看做是性能优化，只有在极少数确实需要的情况下才使用。总之，复制功能最好是通过构造器或者工厂方法来实现，这个规则的例外是数组，其最好的复制方法就是clone方法。
 
-### 
+####
