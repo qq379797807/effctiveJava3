@@ -19,7 +19,7 @@
 
 **当其父类已经覆盖了equals方法，并且父类的行为也适用于当前子类**。比如，大部分的Set实现类都从AbstractSet那里继承了equals实现，List实现类从AbstractList继承equals实现，Map实现类从AbstractMap继承equals实现。
 
-**私有或者包级私有，你确定它的equals方法不会被调用的类**。如果你非常不想貌相，你可以像下面这样覆盖equals方法，以防止被意外的调用。
+**私有或者包级私有，而且你确定它的equals方法不会被调用的类**。如果你非常不想冒险，你可以像下面这样覆盖equals方法，以防止被意外的调用。
 
 ```java
 @Override public boolean equals(Object o) {
@@ -311,7 +311,7 @@ public class CounterPoint extends Point {
 
 在java平台类库里，有一些类继承了可实例化的类还添加了值组件。比如java.sql.Timestamp继承了java.util.Date，还添加了一个nanoseconds 域。Timestamp的equals实现就确实违反了对称性，如果Timestamp对象和Date对象用在同一个集合里，或者以其他的方式混合到一起，就会出现错误的行为。Timestamp类有一个免责声明，告诫程序员不要将Date和Timestamp混用。只要你想他们分开，你就不要遇到任何问题。虽然没有任何东西阻碍你将他们混到一起用，但是出现的错误很难调试。Timestamp类的这种做法不错误的，不要去效仿。
 
-当然，我们继承一个抽象类时，可以添加一个值组件，也不用违反equals的约定。对于根据Item23（”类层次优先于标签类）获得的类层次结构来说，很重要。比如，你可以有一个抽象类Shape，没有任何的值组件，然后有一个子类Circle，添加了一个radius域，另一个子类Rectangle，添加了length和width域。前面提到的问题都会应为无法直接创建父类的实例而不会出现。
+当然，我们继承一个抽象类时，可以添加一个值组件，也不用违反equals的约定。对于根据Item23（”类层次优先于标签类）获得的类层次结构来说，很重要。比如，你可以有一个抽象类Shape，没有任何的值组件，然后有一个子类Circle，添加了一个radius域，另一个子类Rectangle，添加了length和width域。前面提到的问题都会因为无法直接创建父类的实例而不会出现。
 
 > **Consistency**—The fourth requirement of the equals contract says that if two objects are equal, they must remain equal for all time unless one (or both) of them is modified. In other words, mutable objects can be equal to different objects at different times while immutable objects can’t. When you write a class, think hard about whether it should be immutable (Item 17). If you conclude that it should, make sure that your equals method enforces the restriction that equal objects remain equal and unequal objects remain unequal for all time.
 >
@@ -335,7 +335,7 @@ public class CounterPoint extends Point {
 
 > This test is unnecessary. To test its argument for equality, the equals method must first cast its argument to an appropriate type so its accessors can be invoked or its fields accessed. Before doing the cast, the method must use the instanceof operator to check that its argument is of the correct type:
 
-这种测试时没有必要的。因为equals方法在测试相等的时候，需要就是把这个参数转换为特定的类型，以便调用对象的访问方法或者访问它的域。在做类型转换之前，equals方法必须使用instanceof操作来检查这个参数的类型正不正确，如下：
+这种测试是没有必要的。因为equals方法在测试相等的时候，需要就是把这个参数转换为特定的类型，以便调用对象的访问方法或者访问它的域。在做类型转换之前，equals方法必须使用instanceof操作来检查这个参数的类型正不正确，如下：
 
 ```java
 @Override public boolean equals(Object o) {
@@ -374,7 +374,7 @@ public class CounterPoint extends Point {
 
 > For some classes, such as CaseInsensitiveString above, field comparisons are more complex than simple equality tests. If this is the case, you may want to store a _canonical form_ of the field so the equals method can do a cheap exact comparison on canonical forms rather than a more costly nonstandard comparison. This technique is most appropriate for immutable classes (Item 17); if the object can change, you must keep the canonical form up to date.
 
-对于一些类，比如前面提到的CaseInsensitiveString，它的域的比较就很复杂，不是简单相等的检查。在这种情况下，可以保存一个这个域的“范式”，然后在equals方法中就可以直接精确地比较这个范式，开销比较低，而不是进行开销高、不精确的比较。这种技术最适合不可变类了（Item10），因为如果这个类可变的话，它的范式也必须跟着变。
+对于一些类，比如前面提到的CaseInsensitiveString，它的域的比较就很复杂，不是简单相等的检查。在这种情况下，可以保存一个这个域的“范式”，然后在equals方法中就可以直接精确地比较这个范式，开销比较低，而不是进行开销高、不精确的比较。这种技术最适合不可变类了（Item17），因为如果这个类可变的话，它的范式也必须跟着变。
 
 > The performance of the equals method may be affected by the order in which fields are compared. For best performance, you should first compare fields that are more likely to differ, less expensive to compare, or, ideally, both. You must not compare fields that are not part of an object’s logical state, such as lock fields used to synchronize operations. You need not compare _derived fields_, which can be calculated from “significant fields,” but doing so may improve the performance of the equals method. If a derived field amounts to a summary description of the entire object, comparing this field will save you the expense of comparing the actual data if the comparison fails. For example, suppose you have a Polygon class, and you cache the area. If two polygons have unequal areas, you needn’t bother comparing their edges and vertices.
 
@@ -384,7 +384,7 @@ public class CounterPoint extends Point {
 >
 > An equals method constructed according to the previous recipe is shown in this simplistic PhoneNumber class:
 
-\*\*在编写完equals方法后，问自己三个问题：它满足对称性吗？满足传递性吗？满足一致性吗？\*\*除了问自己以外，还需要写单元测试来检查一下，除非你使用AutoValue（page49）来生成equals方法，这种情况下可以放心地省略测试。当你做这些测试失败后，需要找出来为什么错，然后据此修改equals方法。当然我们的equals方法也需要满足自反性和非空性，但是这两个特性通常自己就满足。
+**在编写完equals方法后，问自己三个问题：它满足对称性吗？满足传递性吗？满足一致性吗？**除了问自己以外，还需要写单元测试来检查一下，除非你使用AutoValue（page49）来生成equals方法，这种情况下可以放心地省略测试。当你做这些测试失败后，需要找出来为什么错，然后据此修改equals方法。当然我们的equals方法也需要满足自反性和非空性，但是这两个特性通常自己就满足。
 
 通过前面那些诀窍写的一个简单的PhoneNumber类的equals方法如下：
 
@@ -425,9 +425,9 @@ public class CounterPoint extends Point {
 
 这里还有一些最后的忠告：
 
-* **在覆盖equals方法的时候总要覆盖hashcode方法（Item1）**。
+* **在覆盖equals方法的时候总要覆盖hashcode方法（Item11）**。
 * **不要让equals方法太过智能**。如果你只是简单地检测各个域是否相等，遵守equals的约定一点也不难。但当你想过度地去寻求各种等价关系，就很容易出问题。通常情况下，把任何一种别名形式放在equals考虑的范围内都不是一个好主意，比如File类就不应该把指向同一个文件的符号链接（symbolic links）拿来比较，幸运的是，File没有这样做。
-* \*\*在equals方法里不要使用其他的类型替代Object。\*\*程序员写一个下面这样的equals方法很常见，花好几个小时都不知道为啥有问题。
+* **在equals方法里不要使用其他的类型替代Object。**程序员写一个下面这样的equals方法很常见，花好几个小时都不知道为啥有问题。
 
 ```java
 // Broken - parameter type must be Object!
