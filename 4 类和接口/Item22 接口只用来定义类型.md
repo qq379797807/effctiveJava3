@@ -24,7 +24,7 @@
 
 > **The constant interface pattern is a poor use of interfaces.** That a class uses some constants internally is an implementation detail. Implementing a constant interface causes this implementation detail to leak into the class’s exported API. It is of no consequence to the users of a class that the class implements a constant interface. In fact, it may even confuse them. Worse, it represents a commitment: if in a future release the class is modified so that it no longer needs to use the constants, it still must implement the interface to ensure binary compatibility. If a nonfinal class implements a constant interface, all of its subclasses will have their namespaces polluted by the constants in the interface.
 
-常量接口是接口的一种退化的使用，类使用使用这些常量，本质上是一种实现细节。而实现一个常量接口，会将这些实现细节暴露到类的导出API中。类实现常量接口，对于类的用户来说并没有什么用处。实际上，往往会让他们感到困惑。更糟糕的是，它还代表了一个承诺：即使在未来的版本中，类已经修改到不需要这些常量了，为了保持兼容性，这个类还是必须要实现这个接口。如果一个非final的类实现了一个常量接口，那么它的所有的子类的命名空间都被这个接口的常量污染了。
+常量接口是接口的一种退化的使用，类使用这些常量，本质上是一种实现细节。而实现一个常量接口，会将这些实现细节暴露到类的导出API中。类实现常量接口，对于类的用户来说并没有什么用处。实际上，往往会让他们感到困惑。更糟糕的是，它还代表了一个承诺：即使在未来的版本中，类已经修改到不需要这些常量了，为了保持兼容性，这个类还是必须要实现这个接口。如果一个非final的类实现了一个常量接口，那么它的所有的子类的命名空间都被这个接口的常量污染了。
 
 > There are several constant interfaces in the Java platform libraries, such as java.io.ObjectStreamConstants. These interfaces should be regarded as anomalies and should not be emulated.
 
