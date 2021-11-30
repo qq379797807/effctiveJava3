@@ -4,11 +4,11 @@ Item26 不要使用原生类型
 
 > First, a few terms. A class or interface whose declaration has one or more _type parameters_ is a _generic_ class or interface \[JLS, 8.1.2, 9.1.2]. For example, the List interface has a single type parameter, E, representing its element type. The full name of the interface is List (read “list of E”), but people often call it List for short. Generic classes and interfaces are collectively known as _generic types_.
 
-首先介绍一些使用到的术语，一个类或者接口，如果它的声明中带有一个或者多个类型参数，那么它就是要一个泛型类或接口 \[JLS, 8.1.2, 9.1.2]。比如，List接口就有一个类型参数E，用来表示其中元素的类型。这个接口的全称是List（读作E的列表），人们通常将其简称为List。泛型类和接口也被统称为泛型。
+首先介绍一些使用到的术语，一个类或者接口，如果它的声明中带有一个或者多个类型参数，那么它就是一个泛型类或接口 \[JLS, 8.1.2, 9.1.2]。比如，List接口就有一个类型参数E，用来表示其中元素的类型。这个接口的全称是List（读作E的列表），人们通常将其简称为List。泛型类和接口也被统称为泛型。
 
 > Each generic type defines a set of _parameterized types_, which consist of the class or interface name followed by an angle-bracketed list of _actual type parameters_ corresponding to the generic type’s formal type parameters \[JLS, 4.4, 4.5]. For example, List (read “list of string”) is a parameterized type representing a list whose elements are of type String. (String is the actual type parameter corresponding to the formal type parameter E.)
 
-每一个泛型都包括一组参数类型，其构成方式如下：首先是类或者接口的名字，然后紧跟着用<>括起来的实际类型参数，实际类型参数和泛型中的形式类型参数对应。比如List（读作String的列表），就是一个表示列表的元素类型为String的参数类型，其中String就是一个对应形式类型参数E的实际类型参数。
+每一个泛型都包括一组参数类型，其构成方式如下：首先是类或者接口的名字，然后紧跟着用<>括起来的实际类型参数，实际类型参数和泛型中的形式类型参数对应。比如List\<String>（读作String的列表），就是一个表示列表的元素类型为String的参数类型，其中String就是一个对应形式类型参数E的实际类型参数。
 
 > Finally, each generic type defines a _raw type_, which is the name of the generic type used without any accompanying type parameters \[JLS, 4.8]. For example, the raw type corresponding to List is List. Raw types behave as if all of the generic type information were erased from the type declaration. They exist primarily for compatibility with pre-generics code.
 
@@ -72,6 +72,6 @@ Test.java:9: error: incompatible types: Coin cannot be converted to Stamp
 
 > As noted earlier, it is legal to use raw types (generic types without their type parameters), but you should never do it. **If you use raw types, you lose all the safety and expressiveness benefits of generics.** Given that you shouldn’t use them, why did the language designers permit raw types in the first place? For compatibility. Java was about to enter its second decade when generics were added, and there was an enormous amount of code in existence that did not use generics. It was deemed critical that all of this code remain legal and interoperate with newer code that does use generics. It had to be legal to pass instances of parameterized types to methods that were designed for use with raw types, and vice versa. This requirement, known as _migration compatibility_, drove the decisions to support raw types and to implement generics using _erasure_ (Item 28).
 
-正如前面说的那样，虽然使用原生类型是合法的，但是你永远都不应该这样做。\*\*如果你使用了原生类型，你就失去了泛型带来的安全性和所有的描述性方面的优势。\*\*既然我们不应该用它们，那为什么语言的设计者还要允许使用它们呢？是为了保持兼容性。当泛型加入的时候，Java即将进入它的第二个十年，已经有大量的没有使用泛型的代码存在了。保证已经存在的代码合法，并且可以和使用泛型的代码互相调用，这是很重要。而且将参数化类型的实例传递给为原生类型设计的方法必须是合法的。这个要求，称为“移植兼容性”，促成了支持原生类型和使用擦除来实现泛型的决定（Item28）。
+正如前面说的那样，虽然使用原生类型是合法的，但是你永远都不应该这样做。**如果你使用了原生类型，你就失去了泛型带来的安全性和所有的描述性方面的优势。**既然我们不应该用它们，那为什么语言的设计者还要允许使用它们呢？是为了保持兼容性。当泛型加入的时候，Java即将进入它的第二个十年，已经有大量的没有使用泛型的代码存在了。保证已经存在的代码合法，并且可以和使用泛型的代码互相调用，这是很重要。而且将参数化类型的实例传递给为原生类型设计的方法必须是合法的。这个要求，称为“移植兼容性”，促成了支持原生类型和使用擦除来实现泛型的决定（Item28）。
 
 > While you shouldn’t use raw types such as List, it is fine to use types that are parameterized to allow insertion of arbitrary objects, such as List. Just what is the difference between the raw type List and the parameterized type List? Loosely speaking, the former has opted out of the generic type system, while the latter has explicitly told the compiler that it is capable of holding objects of any type. While you can pass a List to a parameter of type List, you can’t pass it to a parameter of type List. There are subtyping rules for generics, and List is a subtype of the raw type List, but not of the parameterized type List (Item 28). As a consequence, **you lose type safety if you use a raw type such as** **List, but not if you use a param- eterized type such as List.**
