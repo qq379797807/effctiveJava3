@@ -4,7 +4,7 @@
 
 > Prior to Java 8, it was impossible to add methods to interfaces without breaking existing implementations. If you added a new method to an interface, existing implementations would, in general, lack the method, resulting in a compile-time error. In Java 8, the _default method_ construct was added \[JLS 9.4], with the intent of allowing the addition of methods to existing interfaces. But adding new methods to existing interfaces is fraught with risk.
 
-在Java8之前的版本中，要为已经存在的接口添加方法，又不破坏现有的实现，是不可能的。如果你让接口中添加了一个新的方法，一般来说，已经存在的实现中是不存在这个方法的，就会出现编译问题。在Java8中，增加了默认方法（default method）构造，目的就是要允许给已经存在的接口添加方法。但是，往已经存在的接口中添加实现还是要冒风险的。
+在Java8之前的版本中，要为已经存在的接口添加方法，又不破坏现有的实现，是不可能的。如果你给接口添加了一个新方法，该接口原有的实现类一般是不存在这个方法的，这就会出现编译问题。在Java8中，增加了默认方法（default method）构造，目的就是允许给已经存在的接口添加方法。但是，往已经存在的接口中添加实现还是要冒风险的。
 
 > The declaration for a default method includes a _default implementation_ that is used by all classes that implement the interface but do not implement the default method. While the addition of default methods to Java makes it possible to add methods to an existing interface, there is no guarantee that these methods will work in all preexisting implementations. Default methods are “injected” into existing implementations without the knowledge or consent of their implementors. Before Java 8, these implementations were written with the tacit understanding that their interfaces would _never_ acquire any new methods.
 
@@ -12,11 +12,11 @@
 
 > Many new default methods were added to the core collection interfaces in Java 8, primarily to facilitate the use of lambdas (Chapter 6). The Java libraries’ default methods are high-quality general-purpose implementations, and in most cases, they work fine. But **it is not always possible to write a default method that maintains all invariants of every conceivable implementation.**
 
-在Java8中，为了使lamdba（第6章）的使用更加便利，给核心的集合接口添加了很多新的默认方法。在java类库中的默认方法都是高质量的通用实现，在大部分情况下，它们都能很好的工作。但是**并不是总能编写一个默认方法，能够覆盖其所有可以想到的实现的变体**。
+在Java8中，为了使lamdba（第6章）使用的更加便利，给核心的集合接口添加了很多新的默认方法。在java类库中的默认方法都是高质量的通用实现，在大部分情况下，它们都能很好的工作。但是**并不是总能编写一个默认方法，就能够覆盖其所有可以想到的实现的变体**。
 
 > For example, consider the removeIf method, which was added to the Collection interface in Java 8. This method removes all elements for which a given boolean function (or _predicate_) returns true. The default implementation is specified to traverse the collection using its iterator, invoking the predicate on each element, and using the iterator’s remove method to remove the elements for which the predicate returns true. Presumably the declaration looks something like this:
 
-比如在Java8中添加到集合接口中的removeIf方法。这个方法删除集合中所有“根据给定的boolean函数（或者断言）返回为true”的元素。其默认实现明确指出，它使用集合的迭代器来遍历集合，然后再每一个元素上调用断言，当断言返回true的时候，使用迭代器的remove方法来删除这个元素。其声明大致如下：
+比如Java8添加到集合接口中的removeIf方法。这个方法删除集合中所有“根据给定的boolean函数（或者断言）返回为true”的元素。其默认实现明确指出，它使用集合的迭代器来遍历集合，然后在每一个元素上调用断言，当断言返回true的时候，使用迭代器的remove方法来删除这个元素。其声明大致如下：
 
 ```java
 // Default method added to the Collection interface in Java 8
@@ -47,11 +47,11 @@ Apache的SynchronizedCollection类至今还在被维护。但是截止本书编�
 
 > **In the presence of default methods, existing implementations of an interface may compile without error or warning but fail at runtime.** While not terribly common, this problem is not an isolated incident either. A handful of the methods added to the collections interfaces in Java 8 are known to be susceptible, and a handful of existing implementations are known to be affected.
 
-在使用默认方法的时候，虽然已经存在的接口的实现在编译的时候不会报错或者警告，但在运行的时候却会出错。虽然这个问题并不普遍，但也不是个例。在java8中，有一些被添加到集合中的方法被认为是容易受到感染的，也有一些已经存在的实现已经受到了影响。
+在使用默认方法的时候，虽然已经存在的接口的实现在编译的时候不会报错或者警告，但在运行的时候却会出错。虽然这个问题并不普遍，但也不是个例。在java8中，有一些被添加到集合中的方法被认为是容易受到影响的，也有一些已经存在的实现已经受到了影响。
 
 > Using default methods to add new methods to existing interfaces should be avoided unless the need is critical, in which case you should think long and hard about whether an existing interface implementation might be broken by your default method implementation. Default methods are, however, extremely useful for providing standard method implementations when an interface is created, to ease the task of implementing the interface (Item 20).
 
-除非确实非常需要，否则应该避免使用默认方法来给已经存在的接口添加新的方法。在添加的时候，也必须认真努力思考，是否有已存在的接口实现可能会被新增的默认方法实现破坏。然而，在创建接口的时候，为了是接口实现变得更容易，默认方法可以提供标准的方法实现，是非常有用的。
+除非必要，否则应该避免使用默认方法来给已有接口添加新的方法。在添加的时候，也必须认真努力思考，是否有已存在的接口实现可能会被新增的默认方法实现破坏。然而，在创建新的接口的时候，为了是接口实现变得更容易，默认方法可以提供标准的方法实现，是非常有用的。
 
 > It is also worth noting that default methods were not designed to support removing methods from interfaces or changing the signatures of existing methods. Neither of these interface changes is possible without breaking existing clients.
 
@@ -59,10 +59,10 @@ Apache的SynchronizedCollection类至今还在被维护。但是截止本书编�
 
 > The moral is clear. Even though default methods are now a part of the Java platform, **it is still of the utmost importance to design interfaces with great care.** While default methods make it _possible_ to add methods to existing interfaces, there is great risk in doing so. If an interface contains a minor flaw, it may irritate its users forever; if an interface is severely deficient, it may doom the API that contains it.
 
-结论很明显：即使默认方法现在是Java平台中的一部分，**但是谨慎小心地设计接口仍然是至关重要的**。虽然默认方法可以给已存在的接口添加方法，但是这样做还是有很大的风险。就算一个接口只有一个小问题，也会让用户一直不愉快；假如接口有了严重的问题，就可能会摧毁包含它的API。
+结论很明显：即使默认方法现在是Java平台中的一部分，**但是谨慎小心地设计接口仍然是至关重要的**。虽然默认方法可以已有接口添加新方法，但是这样做还是有很大的风险。就算一个接口只有一个小问题，也会让用户一直不愉快；假如接口有了严重的问题，就可能会摧毁包含它的API。
 
 > Therefore, it is critically important to test each new interface before you release it. Multiple programmers should implement each interface in different ways. At a minimum, you should aim for three diverse implementations. Equally important is to write multiple client programs that use instances of each new interface to perform various tasks. This will go a long way toward ensuring that each interface satisfies all of its intended uses. These steps will allow you to discover flaws in interfaces before they are released, when you can still correct them easily. **While it may be possible to correct some interface flaws after an interface is released, you cannot count on it**.
 
-因此，在你发布每个新的接口前，进行测试是至关重要的。多个程序员应该使用不同方式实现每一个接口，至少，应该有三种不同的实现方式。编写多个客户端程序来使用新接口的实例来执行不同的任务也是同等重要的。这些步骤都有助于保证每一个接口都满足其所有的预期的用法。这些方法帮助你在接口发布之前，发现问题，此时你还可以很容易地修改这些问题。**虽在接口发布后，也许还能改正问题，但是最好还是不要指望了**。
+因此，在你发布每个新的接口前，进行测试是至关重要的。多个程序员应该使用不同方式实现每一个接口，至少，应该有三种不同的实现方式。编写多个客户端程序来使用新接口的实例来执行不同的任务也是同等重要的。这些步骤都有助于保证每一个接口都满足其所有预期的用法。这些方法帮助你在接口发布之前，发现问题，此时你还可以很容易地修改这些问题。**虽在接口发布后，也许还能改正问题，但是最好还是不要指望了**。
 
 ####
