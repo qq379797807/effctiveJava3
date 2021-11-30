@@ -32,7 +32,7 @@ public class Main {
 
 > Of course the main program prints pancake. Now suppose you accidentally make _another_ source file named Dessert.java that defines the same two classes:
 
-显然Main程序会答应”pancake“，现在假设你有不小心弄了另外一个名为Dessert.java的源文件，也包含这两个类，如下：
+显然Main程序会打印”pancake“，现在假设你有不小心弄了另外一个名为Dessert.java的源文件，也包含这两个类，如下：
 
 ```java
 // Two classes defined in one file. Don't ever do this!
