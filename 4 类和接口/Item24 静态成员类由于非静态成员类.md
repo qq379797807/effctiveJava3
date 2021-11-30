@@ -10,7 +10,7 @@
 
 > One common use of a static member class is as a public helper class, useful only in conjunction with its outer class. For example, consider an enum describing the operations supported by a calculator (Item 34). The Operation enum should be a public static member class of the Calculator class. Clients of Calculator could then refer to operations using names like Calculator.Operation.PLUS and Calculator.Operation.MINUS.
 
-一个静态成员类的常见用法是作为公有的辅助类，只有和其外围类一起合作才有用。以一个描述了计算器（calculator）支持的操作（Operation）的枚举为例(Item34)，这个Operation枚举应该是Calculator类的一个公有的内部类，Calculator的客户端就可以通过类似 Calculator.Operation.PLUS 和Calculator.Operation.MINUS的名字来引用这些操作。
+一个静态成员类的常见用法是作为公有的辅助类，只有和其外围类一起合作才有用。以一个描述计算器（calculator）的操作（Operation）的枚举为例(Item34)，这个Operation枚举应该是Calculator类的一个公有的内部类，Calculator的客户端就可以通过类似 Calculator.Operation.PLUS 和Calculator.Operation.MINUS的名字来引用这些操作。
 
 > Syntactically, the only difference between static and nonstatic member classes is that static member classes have the modifier static in their declarations. Despite the syntactic similarity, these two kinds of nested classes are very different. Each instance of a nonstatic member class is implicitly associated with an _enclosing instance_ of its containing class. Within instance methods of a nonstatic member class, you can invoke methods on the enclosing instance or obtain a reference to the enclosing instance using the _qualified this_ construct \[JLS, 15.8.4]. If an instance of a nested class can exist in isolation from an instance of its enclosing class, then the nested class _must_ be a static member class: it is impossible to create an instance of a nonstatic member class without an enclosing instance.
 
@@ -38,11 +38,11 @@
 
 > **If you declare a member class that does not require access to an enclosing instance,** **always** **put the** **static** **modifier in its declaration,** making it a static rather than a nonstatic member class. If you omit this modifier, each instance will have a hidden extraneous reference to its enclosing instance. As previously mentioned, storing this reference takes time and space. More seriously, it can result in the enclosing instance being retained when it would otherwise be eligible for garbage collection (Item 7). The resulting memory leak can be catastrophic. It is often difficult to detect because the reference is invisible.
 
-**如果你声明的成员类不需要访问其外围类实例，那么就应该在声明中添加static修饰符**，让这个成员类是静态的而不是非静态的。如果你省略了这个修饰符，每一个内部类实例都会有一个额外的隐藏的指向外部类实例的引用。正如前面提到的那样，保存这个引用会花费时间和空间。更严重地是，它可能导致一个本该被垃圾回收的外部类实例被保留下来，这个问题导致的内存泄露问题是灾难性的。但是却难以发现，因为这个引用时不可见的。
+**如果你声明的成员类不需要访问其外围类实例，那么就应该在声明中添加static修饰符**，让这个成员类是静态的而不是非静态的。如果你省略了这个修饰符，每一个内部类实例都会有一个额外的隐藏的指向外部类实例的引用。正如前面提到的那样，保存这个引用会花费时间和空间。更严重地是，它可能导致一个本该被垃圾回收的外部类实例被保留下来，这个问题导致的内存泄露问题是灾难性的。但是却难以发现，因为这个引用是不可见的。
 
 > A common use of private static member classes is to represent components of the object represented by their enclosing class. For example, consider a Map instance, which associates keys with values. Many Map implementations have an internal Entry object for each key-value pair in the map. While each entry is associated with a map, the methods on an entry (getKey, getValue, and setValue) do not need access to the map. Therefore, it would be wasteful to use a nonstatic member class to represent entries: a private static member class is best. If you accidentally omit the static modifier in the entry declaration, the map will still work, but each entry will contain a superfluous reference to the map, which wastes space and time.
 
-私有静态成员类的常见的用法是代表外围类代表的对象组件。以Map实例为例，它把键值关联起来，在很多的Map的实现中，都有一个内部Entry对象来表示map中的每一个键值对。虽然每一个entry都和map相关联，但是其方法（getKey, getValue, 和setValue）都不需要访问map。因此，使用非静态成员类来表示entry是比较浪费的，私有静态成员类就是最好的选择。如果你不小心漏掉了entry声明前的stati修饰符，这个map也能工作，但是它的每一个entry都包含一个指向map的多余的引用，既浪费时间又浪费空间。
+私有静态成员类的常见的用法是代表外围类代表的对象组件。以Map实例为例，它把键值关联起来，在很多Map的实现中，都有一个内部Entry对象来表示map中的每一个键值对。虽然每一个entry都和map相关联，但是其方法（getKey, getValue, 和setValue）都不需要访问map。因此，使用非静态成员类来表示entry是比较浪费的，私有静态成员类就是最好的选择。如果你不小心漏掉了entry声明前的stati修饰符，这个map也能工作，但是它的每一个entry都包含一个指向map的多余的引用，既浪费时间又浪费空间。
 
 > It is doubly important to choose correctly between a static and a nonstatic member class if the class in question is a public or protected member of an exported class. In this case, the member class is an exported API element and cannot be changed from a nonstatic to a static member class in a subsequent release without violating backward compatibility.
 
@@ -54,7 +54,7 @@
 
 > There are many limitations on the applicability of anonymous classes. You can’t instantiate them except at the point they’re declared. You can’t perform instanceof tests or do anything else that requires you to name the class. You can’t declare an anonymous class to implement multiple interfaces or to extend a class and implement an interface at the same time. Clients of an anonymous class can’t invoke any members except those it inherits from its supertype. Because anonymous classes occur in the midst of expressions, they must be kept short— about ten lines or fewer—or readability will suffer.
 
-匿名类的使用有很多的限制。除了匿名类声明的时候，其他时候无法进行实例化。也不能对其进行instanceof测试，所有需要类的名字的事情都不能做。也不能声明一个匿名类 同时 “实现多个接口或者继承一个类”和实现一个接口。匿名类的客户端不能调用任何成员，从父类继承来的除外。因为匿名类是写在表达式中间的，所以他们必须很短--大概10行或者更短，否则就会破坏代码的可读性。
+匿名类的使用有很多的限制。除了匿名类声明的时候，其他时候无法进行实例化。也不能对其进行instanceof测试，所有需要类的名字的事情都不能做。也不能声明一个匿名类的时候 “实现多个接口”或者“继承一个类同时实现一个接口”。匿名类的客户端不能调用任何成员，从父类继承来的除外。因为匿名类是写在表达式中间的，所以他们必须很短--大概10行或者更短，否则就会破坏代码的可读性。
 
 > Before lambdas were added to Java (Chapter 6), anonymous classes were the preferred means of creating small _function objects_ and _process objects_ on the fly, but lambdas are now preferred (Item 42). Another common use of anonymous classes is in the implementation of static factory methods (see intArrayAsList in Item 20).
 
