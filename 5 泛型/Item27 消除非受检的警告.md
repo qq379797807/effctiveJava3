@@ -4,9 +4,9 @@
 >
 > Many unchecked warnings are easy to eliminate. For example, suppose you accidentally write this declaration:
 
-当你在使用泛型进行编程的时候，你可能会看到很多的编译器警告：非受检转换警告、非受检方法调用警告、非受检参数化可变参数类型警告、和非受检转变警告。随着你使用泛型经验的增加，代码生生的警告就越少，不要奢望一开始编写泛型就可以干干净净地进行编译。
+当你在使用泛型进行编程的时候，你可能会看到很多的编译器警告：unchecked cast warnings, unchecked method invocation warnings, unchecked parameterized vararg type warnings, and unchecked conversion warnings.。随着你使用泛型经验的增加，代码生生的警告就越少，不要奢望一开始编写泛型就可以干干净净地进行编译。
 
-很多非受检警告都可以很容易地被清除，比如，假如你写了这个声明：
+很多unchecked warnings 都可以很容易地被清除，比如，假如你写了这个声明：
 
 ```java
 Set<Lark> exaltation = new HashSet();
@@ -34,7 +34,7 @@ Set<Lark> exaltation = new HashSet<>();
 
 > Some warnings will be _much_ more difficult to eliminate. This chapter is filled with examples of such warnings. When you get warnings that require some thought, persevere! **Eliminate every unchecked warning that you can.** If you eliminate all warnings, you are assured that your code is typesafe, which is a very good thing. It means that you won’t get a ClassCastException at runtime, and it increases your confidence that your program will behave as you intended.
 
-而另一些警告就很难消除了，本章的例子中就有很多这些警告。当你碰到一些需要深入思考的警告时，一定要坚持！**消除所有你能消除的非受检警告**。如果你把所有的警告都消除了，你就可以保证你的代码是类型安全的，这是一个非常好的事情。这意味着在运行时，不会出现ClassCastException，你也可以更加相信你的程序会表现得和你期望的一致。
+而另一些警告就很难消除了，本章的例子中就有很多这些警告。当你碰到一些需要深入思考的警告时，一定要坚持！**消除所有你能消除的**unchecked warnings 。如果你把所有的警告都消除了，你就可以保证你的代码是类型安全的，这是一个非常好的事情。这意味着在运行时，不会出现ClassCastException，你也可以更加相信你的程序会表现得和你期望的一致。
 
 > **If you can’t eliminate a warning, but you can prove that the code that provoked the warning is typesafe, then (and only then) suppress the warning with an** **@SuppressWarnings("unchecked")** **annotation.** If you suppress warnings without first proving that the code is typesafe, you are giving yourself a false sense of security. The code may compile without emitting any warnings, but it can still throw a ClassCastException at runtime. If, however, you ignore unchecked warnings that you know to be safe (instead of suppressing them), you won’t notice when a new warning crops up that represents a real problem. The new warning will get lost amidst all the false alarms that you didn’t silence.
 
@@ -51,10 +51,10 @@ SuppressWarnings注解可以被用在所有的声明上，从单独的本地变�
 ```java
 public <T> T[] toArray(T[] a) {
        if (a.length < size)
-			 		return (T[]) Arrays.copyOf(elements, size, a.getClass()); 
-  		 System.arraycopy(elements, 0, a, 0, size);
-			 if (a.length > size)
-          a[size] = null;
+              return (T[]) Arrays.copyOf(elements, size, a.getClass()); 
+  	System.arraycopy(elements, 0, a, 0, size);
+	if (a.length > size)
+              a[size] = null;
        return a;
 }
 ```
@@ -79,9 +79,9 @@ return (T[]) Arrays.copyOf(elements, size, a.getClass());
    // Adding local variable to reduce scope of @SuppressWarnings
    public <T> T[] toArray(T[] a) {
        if (a.length < size) {
-						// This cast is correct because the array we're creating 
-         		// is of the same type as the one passed in, which is T[]. 
-         		@SuppressWarnings("unchecked") T[] result =
+	      // This cast is correct because the array we're creating 
+              // is of the same type as the one passed in, which is T[]. 
+              @SuppressWarnings("unchecked") T[] result =
               (T[]) Arrays.copyOf(elements, size, a.getClass());
             return result;
        }
@@ -100,6 +100,6 @@ return (T[]) Arrays.copyOf(elements, size, a.getClass());
 >
 > In summary, unchecked warnings are important. Don’t ignore them. Every unchecked warning represents the potential for a ClassCastException at runtime. Do your best to eliminate these warnings. If you can’t eliminate an unchecked warning and you can prove that the code that provoked it is typesafe, suppress the warning with a @SuppressWarnings("unchecked") annotation in the narrowest possible scope. Record the rationale for your decision to suppress the warning in a comment.
 
-当你每次用@SuppressWarnings("unchecked")注解的时候，都应该添加一个注解说明这么做为什么是安全的。这样做可以帮助别人理解代码，更重要的是，这样可以减少其他人修改代码后导致计算不安全的可能性。如果你发现要写一个这样的注解很难，就需要好好思考一下了。最终你可能会返现这个未受检操作是不安全的。
+当你每次用@SuppressWarnings("unchecked")注解的时候，都应该添加一个注释说明这么做为什么是安全的。这样做可以帮助别人理解代码，更重要的是，这样可以减少其他人修改代码后导致计算不安全的可能性。如果你发现要写一个这样的注释很难，就需要好好思考一下了。最终你可能会返现这个未受检操作是不安全的。
 
-总结一下，非受检警告很重要，不要忽略它们。每一个非受检警告都代表着运行时潜在的ClassCastException。尽可能消除这些警告。如果你实在不能消除这个受检警告，并且你能证明这段代码是类型安全的，可以在尽可能小的作用域范围上使用@SuppressWarnings("unchecked") 注解来禁止警告。当你决定禁止警告的时候，必须在注解中说明禁止原因。
+总结一下，非受检警告很重要，不要忽略它们。每一个非受检警告都代表着运行时潜在的ClassCastException。尽可能消除这些警告。如果你实在不能消除这个受检警告，并且你能证明这段代码是类型安全的，可以在尽可能小的作用域范围上使用@SuppressWarnings("unchecked") 注解来禁止警告。当你决定禁止警告的时候，必须在注释中说明禁止原因。
