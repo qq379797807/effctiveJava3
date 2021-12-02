@@ -34,7 +34,7 @@ text.applyStyles(STYLE_BOLD | STYLE_ITALIC);
 
 > Here is how the previous example looks when modified to use enums and enum sets instead of bit fields. It is shorter, clearer, and safer:
 
-下面是前面的例子使用Enum和EnumSer表示的代码。它更短，更简洁，更安全：
+下面是前面的例子使用Enum和EnumSet表示的代码。它更短，更简洁，更安全：
 
 ```java
 // EnumSet - a modern replacement for bit fields
@@ -59,4 +59,4 @@ text.applyStyles(EnumSet.of(Style.BOLD, Style.ITALIC));
 
 > In summary, **just because an enumerated type will be used in sets, there is no reason to represent it with bit fields.** The EnumSet class combines the conciseness and performance of bit fields with all the many advantages of enum types described in Item 34. The one real disadvantage of EnumSet is that it is not, as of Java 9, possible to create an immutable EnumSet, but this will likely be remedied in an upcoming release. In the meantime, you can wrap an EnumSet with Collections.unmodifiableSet, but conciseness and performance will suffer.
 
-总结一下，\*\*如果仅仅因为枚举类型需要被用在集合中，完全没有理解使用位域。\*\*EnumSet类集简洁、位域的高性能、和Item34里介绍的枚举的很多优点于一身。这个EnumSet的一个缺点是，截止到Java9，都不可能创建一个不可变的EnumSet，但是这个问题可能会在后面的版本中修复。同时你也可以使用Collections.unmodifiableSet来包装EnumSet，但是简洁性和高性能可能会受到影响。
+总结一下，**如果仅仅因为枚举类型需要被用在集合中，完全没有理由使用位域。**EnumSet类集简洁、位域的高性能、和Item34里介绍的枚举的很多优点于一身。这个EnumSet的一个缺点是，截止到Java9，都不可能创建一个不可变的EnumSet，但是这个问题可能会在后面的版本中修复。同时你也可以使用Collections.unmodifiableSet来包装EnumSet，但是简洁性和高性能可能会受到影响。
