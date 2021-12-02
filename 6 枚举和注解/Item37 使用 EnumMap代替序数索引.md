@@ -66,7 +66,8 @@ for (int i = 0; i < plantsByLifeCycle.length; i++) {
 上面的程序，使用Stream来管理map的话，还可以变得简短得多。下面是基于Stream的最简单的代码，基本复制了前面的例子的大部分行为：
 
 ```java
-// Naive stream-based approach - unlikely to produce an EnumMap! System.out.println(Arrays.stream(garden).collect(groupingBy(p -> p.lifeCycle)));
+// Naive stream-based approach - unlikely to produce an EnumMap!
+ System.out.println(Arrays.stream(garden).collect(groupingBy(p -> p.lifeCycle)));
 ```
 
 > The problem with this code is that it chooses its own map implementation, and in practice it won’t be an EnumMap, so it won’t match the space and time performance of the version with the explicit EnumMap. To rectify this problem, use the three-parameter form of Collectors.groupingBy, which allows the caller to specify the map implementation using the mapFactory parameter:
@@ -75,9 +76,11 @@ for (int i = 0; i < plantsByLifeCycle.length; i++) {
 
 ```java
 // Using a stream and an EnumMap to associate data with an enum
-   System.out.println(Arrays.stream(garden)
-           .collect(groupingBy(p -> p.lifeCycle,
-					 		() -> new EnumMap<>(LifeCycle.class), toSet())));
+   System.out.println(Arrays.stream(garden).collect(groupingBy(
+      	p -> p.lifeCycle,
+	() -> new EnumMap<>(LifeCycle.class), 
+	toSet()
+)));
 ```
 
 > This optimization would not be worth doing in a toy program like this one but could be critical in a program that made heavy use of the map.
@@ -179,4 +182,4 @@ public enum Phase {
 
 > In summary, **it is rarely appropriate to use ordinals to index into arrays: use** **EnumMap** **instead.** If the relationship you are representing is multidimensional, use EnumMap<..., EnumMap<...>>. This is a special case of the general principle that application programmers should rarely, if ever, use Enum.ordinal (Item 35).
 
-总结一下，\*\*最好不要使用序数（ordinal）来索引数组，最好使用EnumMap。\*\*当你要表达的关系是多维的时候，可以使用EnumMap<..., EnumMap<...>>结构。应用程序的程序员一般都不需要使用Enum.ordinal，只有在Item35中介绍的特殊情况下才会使用。
+总结一下，**最好不要使用序数（ordinal）来索引数组，最好使用EnumMap。**当你要表达的关系是多维的时候，可以使用EnumMap<..., EnumMap<...>>结构。应用程序的程序员一般都不需要使用Enum.ordinal，只有在Item35中介绍的特殊情况下才会使用。
