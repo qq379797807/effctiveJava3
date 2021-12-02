@@ -9,7 +9,7 @@
    public enum Ensemble {
        SOLO,   DUET,   TRIO, QUARTET, QUINTET,
        SEXTET, SEPTET, OCTET, NONET,  DECTET;
-			 public int numberOfMusicians() { return ordinal() + 1; } 
+        public int numberOfMusicians() { return ordinal() + 1; } 
    }
 ```
 
@@ -19,7 +19,7 @@
 
 > Also, you can’t add a constant for an int value without adding constants for all intervening int values. For example, suppose you want to add a constant representing a _triple quartet_, which consists of twelve musicians. There is no standard term for an ensemble consisting of eleven musicians, so you are forced to add a dummy constant for the unused int value (11). At best, this is ugly. If many int values are unused, it’s impractical.
 
-而且，如果没有为某个int值以下的所有int值设置常量，就不能添加该int值的常量。比如，你想添加一个常量值表示“三 四重奏”（包换12个音乐家）。但是对于包含11个音乐家的组合，没有一个标准的术语，但是你还是必须要为没用的int值11添加一个虚拟的常量。最好的情况就是代码有点丑，如果有很多的int中都没有用，那就是不切实际的。
+而且，如果没有为某个int值以下的所有int值设置常量，就不能添加该int值的常量。比如，你想添加一个常量值表示“三 四重奏”（包含12个音乐家）。但是对于包含11个音乐家的组合，没有一个标准的术语，但是你还是必须要为没用的int值11添加一个虚拟的常量。最好的情况就是代码有点丑，如果有很多的int中都没有用，那就是不切实际的。
 
 > Luckily, there is a simple solution to these problems. **Never derive a value associated with an enum from its ordinal; store it in an instance field instead:**
 
@@ -31,11 +31,11 @@ public enum Ensemble {
        SEXTET(6), SEPTET(7), OCTET(8), DOUBLE_QUARTET(8),
        NONET(9), DECTET(10), TRIPLE_QUARTET(12);
   
-			 private final int numberOfMusicians;
-			 Ensemble(int size) { this.numberOfMusicians = size; } 
+	private final int numberOfMusicians;
+	Ensemble(int size) { this.numberOfMusicians = size; } 
   
-  		 public int numberOfMusicians(){
-         return numberOfMusicians; 
+  	public int numberOfMusicians(){
+                return numberOfMusicians; 
        }
 }
 ```
